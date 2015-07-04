@@ -85,10 +85,12 @@
         mediaPlayer.attachSource(video.src);
       },
       resume: function() {
+        var mplayer = mediaPlayer || videoTag;
+
         if (player.finished) {
           videoTag.currentTime = 0;
         }
-        videoTag.play();
+        mplayer.play();
       },
       pause: function() {
         videoTag.pause();
