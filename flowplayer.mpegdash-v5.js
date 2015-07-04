@@ -102,8 +102,10 @@
           mplayer.play();
 
           $(videoTag).one("seeked.dashpaused", function () {
-            videoTag.pause()
-            videoTag.volume = volume;
+            setTimeout(function () {
+              videoTag.pause()
+              videoTag.volume = volume;
+            }, 10);
           });
         }
         if (mediaPlayer) {
