@@ -79,6 +79,7 @@
         root.prepend(videoTag);
 
         mediaPlayer = new MediaPlayer(context);
+        mediaPlayer.setScheduleWhilePaused(true);
         mediaPlayer.setAutoPlay(player.conf.autoplay || player.conf.splash);
         mediaPlayer.startup();
         mediaPlayer.attachView(videoTag);
@@ -97,16 +98,9 @@
       },
       seek: function(time) {
         if (videoTag.paused) {
-          var volume = videoTag.volume,
-            mplayer = mediaPlayer || videoTag;
-
-          videoTag.volume = 0;
-          mplayer.play();
-
           $(videoTag).one("seeked.dashpaused", function () {
             setTimeout(function () {
               videoTag.pause()
-              videoTag.volume = volume;
             }, 10);
           });
         }

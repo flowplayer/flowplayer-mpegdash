@@ -86,6 +86,7 @@
 
                     mediaPlayer = new MediaPlayer(context);
                     mediaPlayer.setAutoPlay(player.conf.autoplay || player.conf.splash);
+                    mediaPlayer.setScheduleWhilePaused(true);
                     mediaPlayer.startup();
                     mediaPlayer.attachView(videoTag);
                     mediaPlayer.attachSource(video.src);
@@ -106,16 +107,9 @@
 
                 seek: function (time) {
                     if (videoTag.paused) {
-                        var volume = videoTag.volume,
-                            mplayer = mediaPlayer || videoTag;
-
-                        videoTag.volume = 0;
-                        mplayer.play();
-
                         bean.one(videoTag, "seeked.dashpaused", function () {
                             setTimeout(function () {
                                 videoTag.pause();
-                                videoTag.volume = volume;
                             }, 10);
                         });
                     }
