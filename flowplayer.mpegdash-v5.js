@@ -102,11 +102,7 @@
             }, 10);
           });
         }
-        if (mediaPlayer) {
-          mediaPlayer.seek(time);
-        } else {
-          videoTag.currentTime = time;
-        }
+        videoTag.currentTime = time;
       },
       volume: function(level) {
         if (videoTag !== undefined) {
