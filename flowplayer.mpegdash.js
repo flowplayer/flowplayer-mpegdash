@@ -108,10 +108,12 @@
                             videoTag.currentTime = 0;
                         }
                         videoTag.play();
+                        player.trigger('resume', [player]);
                     },
 
                     pause: function () {
                         videoTag.pause();
+                        player.trigger('pause', [player]);
                     },
 
                     seek: function (time) {
@@ -119,15 +121,17 @@
                             bean.one(videoTag, "seeked.dashpaused", function () {
                                 setTimeout(function () {
                                     videoTag.pause();
-                                }, 10);
+                                }, 1);
                             });
                         }
                         videoTag.currentTime = time;
+                        player.trigger('seek', [player, time]);
                     },
 
                     volume: function (level) {
                         if (videoTag !== undefined) {
                             videoTag.volume = level;
+                            player.trigger('volume', [player, level]);
                         }
                     },
 
