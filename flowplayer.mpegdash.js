@@ -19,6 +19,8 @@
                 common = flowplayer.common,
                 mediaPlayer,
                 videoTag,
+                poster = false,
+                dashstop = false,
                 context = new Dash.di.DashContext(),
 
                 engine = {
@@ -58,6 +60,8 @@
                                 url: videoTag.currentSrc
                             });
                             player.trigger('ready', [player, video]);
+
+                            poster = common.hasClass(root, "is-poster");
                         });
                         bean.on(videoTag, "seeked", function () {
                             player.trigger('seek', [player, videoTag.currentTime]);
@@ -118,9 +122,18 @@
 
                     seek: function (time) {
                         if (videoTag.paused) {
+                            // dash.js always resumes playback after seek
+                            // see also stop handle below
                             bean.one(videoTag, "seeked.dashpaused", function () {
                                 setTimeout(function () {
                                     videoTag.pause();
+                                    if (dashstop) {
+                                        player.one("resume.dashstop", function () {
+                                            common.removeClass(root, "is-poster");
+                                        });
+                                        common.addClass(root, "is-poster");
+                                        dashstop = false;
+                                    }
                                 }, 1);
                             });
                         }
@@ -129,7 +142,7 @@
                     },
 
                     volume: function (level) {
-                        if (videoTag !== undefined) {
+                        if (videoTag) {
                             videoTag.volume = level;
                             player.trigger('volume', [player, level]);
                         }
@@ -145,9 +158,14 @@
                             mediaPlayer.reset();
                         }
                         common.removeNode(videoTag);
-                        player.trigger("unload", [player]);
+                        player.trigger('unload', [player]);
                     }
                 };
+
+            player.on("stop", function () {
+                // work around delayed pause on seek
+                dashstop = poster;
+            });
 
             return engine;
         };
