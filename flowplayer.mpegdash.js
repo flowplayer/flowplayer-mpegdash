@@ -126,13 +126,13 @@
                                 setTimeout(function () {
                                     videoTag.pause();
                                     if (dashstop) {
-                                        player.one("resume.dashstop", function () {
+                                        bean.one(videoTag, "play.dashstop", function () {
                                             common.removeClass(root, "is-poster");
                                         });
                                         common.addClass(root, "is-poster");
                                         dashstop = false;
                                     }
-                                }, 1);
+                                }, 0);
                             });
                         }
                         videoTag.currentTime = time;
