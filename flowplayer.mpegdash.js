@@ -112,12 +112,10 @@
                             videoTag.currentTime = 0;
                         }
                         videoTag.play();
-                        player.trigger('resume', [player]);
                     },
 
                     pause: function () {
                         videoTag.pause();
-                        player.trigger('pause', [player]);
                     },
 
                     seek: function (time) {
@@ -138,13 +136,11 @@
                             });
                         }
                         videoTag.currentTime = time;
-                        player.trigger('seek', [player, time]);
                     },
 
                     volume: function (level) {
                         if (videoTag) {
                             videoTag.volume = level;
-                            player.trigger('volume', [player, level]);
                         }
                     },
 
