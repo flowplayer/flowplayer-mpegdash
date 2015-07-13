@@ -19,6 +19,7 @@
                 common = flowplayer.common,
                 mediaPlayer,
                 videoTag,
+                posterClass = "is-poster",
                 poster = false,
                 dashstop = false,
                 context = new Dash.di.DashContext(),
@@ -61,7 +62,7 @@
                             });
                             player.trigger('ready', [player, video]);
 
-                            poster = common.hasClass(root, "is-poster");
+                            poster = common.hasClass(root, posterClass);
                         });
                         bean.on(videoTag, "seeked", function () {
                             player.trigger('seek', [player, videoTag.currentTime]);
@@ -127,9 +128,9 @@
                                     videoTag.pause();
                                     if (dashstop) {
                                         bean.one(videoTag, "play.dashstop", function () {
-                                            common.removeClass(root, "is-poster");
+                                            common.removeClass(root, posterClass);
                                         });
-                                        common.addClass(root, "is-poster");
+                                        common.addClass(root, posterClass);
                                         dashstop = false;
                                     }
                                 }, 0);
