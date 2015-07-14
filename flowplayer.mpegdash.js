@@ -11,6 +11,8 @@
 (function () {
     var win = window,
         clientSupport = flowplayer.support.video &&
+                // work around Mac OS Yosemite issue
+                // https://github.com/Dash-Industry-Forum/dash.js/issues/492
                 typeof win.MediaSource == "function" &&
                 win.MediaSource.isTypeSupported('video/mp4; codecs="avc1.640029, mp4a.40.5"'),
 
@@ -170,8 +172,11 @@
 
     engineImpl.engineName = 'mpegdash';
     engineImpl.canPlay = function (type) {
-        return clientSupport && type == "application/dash+xml";
+        return type == "application/dash+xml";
     };
-    flowplayer.engines.push(engineImpl);
+    // only load engine if it can be used
+    if (clientSupport) {
+        flowplayer.engines.push(engineImpl);
+    }
 
 }());
