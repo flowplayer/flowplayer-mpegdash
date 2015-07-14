@@ -22,7 +22,6 @@
                 mediaPlayer,
                 videoTag,
                 posterClass = "is-poster",
-                poster = false,
                 dashstop = false,
                 context = new Dash.di.DashContext(),
 
@@ -64,7 +63,12 @@
                             });
                             player.trigger('ready', [player, video]);
 
-                            poster = common.hasClass(root, posterClass);
+                            if (common.hasClass(root, posterClass)) {
+                                // work around delayed pause on seek
+                                player.on("stop", function () {
+                                    dashstop = true;
+                                });
+                            }
                         });
                         bean.on(videoTag, "seeked", function () {
                             player.trigger('seek', [player, videoTag.currentTime]);
@@ -160,11 +164,6 @@
                         player.trigger('unload', [player]);
                     }
                 };
-
-            player.on("stop", function () {
-                // work around delayed pause on seek
-                dashstop = poster;
-            });
 
             return engine;
         };
