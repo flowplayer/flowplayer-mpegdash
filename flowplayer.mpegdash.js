@@ -21,7 +21,6 @@
                 common = flowplayer.common,
                 mediaPlayer,
                 videoTag,
-                posterClass = "is-poster",
                 dashstop = false,
                 context = new Dash.di.DashContext(),
 
@@ -62,13 +61,6 @@
                                 url: videoTag.currentSrc
                             });
                             player.trigger('ready', [player, video]);
-
-                            if (common.hasClass(root, posterClass)) {
-                                // work around delayed pause on seek
-                                player.on("stop", function () {
-                                    dashstop = true;
-                                });
-                            }
                         });
                         bean.on(videoTag, "seeked", function () {
                             player.trigger('seek', [player, videoTag.currentTime]);
@@ -128,16 +120,13 @@
                     seek: function (time) {
                         if (videoTag.paused) {
                             // dash.js always resumes playback after seek
-                            // see also stop handle below
                             bean.one(videoTag, "seeked.dashpaused", function () {
                                 setTimeout(function () {
                                     videoTag.pause();
+                                    // stop seeks to 0 causing dash.js to resume
+                                    // see stop handle below
                                     if (dashstop) {
-                                        bean.one(videoTag, "play.dashstop", function () {
-                                            common.removeClass(root, posterClass);
-                                        });
-                                        common.addClass(root, posterClass);
-                                        dashstop = false;
+                                        player.trigger('stop', [player]);
                                     }
                                 }, 0);
                             });
@@ -164,6 +153,15 @@
                         player.trigger('unload', [player]);
                     }
                 };
+
+
+            // see seek implementation above
+            player.on("stop", function (e) {
+                if (!dashstop) {
+                    e.preventDefault();
+                }
+                dashstop = !dashstop;
+            });
 
             return engine;
         };
