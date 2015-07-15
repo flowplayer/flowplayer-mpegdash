@@ -9,42 +9,57 @@
 */
 
 (function ($) {
-  flowplayer.engine.dash = function(player, root) {
+  if (!flowplayer.support.video ||
+      typeof window.MediaSource != "function" ||
+      !window.MediaSource.isTypeSupported('video/mp4; codecs="avc1.640029, mp4a.40.5"')) {
+    return;
+  }
+
+
+  flowplayer.engine.mpegdash = function(player, root) {
     var mediaPlayer,
     videoTag,
+    dashstop = false,
     context = new Dash.di.DashContext();
+
+    // see seek implementation below
+    player.bind("stop", function (e) {
+      if (!dashstop) {
+        e.preventDefault();
+      }
+      dashstop = !dashstop;
+    });
 
     return {
       pick: function(sources) {
-        if (typeof window.MediaSource == "function" &&
-            window.MediaSource.isTypeSupported('video/mp4; codecs="avc1.640029, mp4a.40.5"')) {
-          var sources = $.grep(sources, function(src) {
-            return src.type === 'application/dash+xml';
-          });
-          if (!sources.length) return;
-          return sources[0];
+        var i;
+
+        for (i = 0; i < sources.length; i++) {
+          if (sources[i].type === "application/dash+xml") {
+            return sources[i];
+          }
         }
       },
       load: function(video) {
         root.find('video').remove();
-        videoTag = document.createElement('video');
-        videoTag.addEventListener('play', function() {
+        videoTag = $("<video/>")[0],
+        $(videoTag).on('play', function() {
           root.trigger('resume', [player]);
         });
-        videoTag.addEventListener('pause', function() {
+        $(videoTag).on('pause', function() {
           root.trigger('pause', [player]);
         });
-        videoTag.addEventListener('timeupdate', function() {
+        $(videoTag).on('timeupdate', function() {
           root.trigger('progress', [player, videoTag.currentTime]);
         });
-        videoTag.addEventListener('loadedmetadata', function() {
+        $(videoTag).on('loadeddata', function() {
           video.duration = video.seekable = videoTag.duration;
           root.trigger('ready', [player, video]);
         });
-        videoTag.addEventListener('seeked', function() {
+        $(videoTag).on('seeked', function() {
           root.trigger('seek', [player, videoTag.currentTime]);
         });
-        videoTag.addEventListener('progress', function() {
+        $(videoTag).on('progress', function(e) {
           try {
             var buffered = videoTag.buffered,
                 buffer = buffered.end(0), // first loaded buffer
@@ -65,12 +80,12 @@
             }
             video.buffer = buffer;
           } catch (ignored) {}
-          root.trigger('buffer', [player]);
+          root.trigger('buffer', [player, e]);
         });
-        videoTag.addEventListener('ended', function() {
+        $(videoTag).on('ended', function() {
           root.trigger('finish', [player]);
         });
-        videoTag.addEventListener('volumechange', function() {
+        $(videoTag).on('volumechange', function() {
           root.trigger('volume', [player, videoTag.volume]);
         });
 
@@ -96,16 +111,22 @@
       },
       seek: function(time) {
         if (videoTag.paused) {
+          // dash.js always resumes playback after seek
           $(videoTag).one("seeked.dashpaused", function () {
             setTimeout(function () {
               videoTag.pause()
-            }, 10);
+              // stop seeks to 0 causing dash.js to resume
+              // see stop handle above
+              if (dashstop) {
+                player.trigger('stop', [player]);
+              }
+            }, 0);
           });
         }
         videoTag.currentTime = time;
       },
       volume: function(level) {
-        if (videoTag !== undefined) {
+        if (videoTag) {
           videoTag.volume = level;
         }
       },
@@ -122,5 +143,12 @@
       }
 
     };
+
   };
+
+  $(function () {
+    // hack: globally force dash engine, but allow other global config
+    flowplayer.conf.engine = "mpegdash";
+  });
+
 }(jQuery));
