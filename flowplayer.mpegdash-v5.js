@@ -19,7 +19,7 @@
 
 (function ($) {
   if (!flowplayer.support.video ||
-      typeof window.MediaSource != "function" ||
+      !window.MediaSource ||
       !window.MediaSource.isTypeSupported('video/mp4; codecs="avc1.640029, mp4a.40.5"')) {
     return;
   }
