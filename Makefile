@@ -20,5 +20,11 @@ v5:
 
 all: default v5
 
+dist: clean all
+	@ cp dash.all.js flowplayer.mpegdash.js flowplayer.mpegdash-v5.js $(DIST)/
+
+zip: clean dist
+	@ cd $(DIST) && zip flowplayer.mpegdash.zip *.js
+
 clean:
 	@ rm -rf $(DIST)
