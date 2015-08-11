@@ -28,6 +28,7 @@
                 common = flowplayer.common,
                 mediaPlayer,
                 videoTag,
+                preventDashResume = false,
                 context = new Dash.di.DashContext(),
 
                 engine = {
@@ -50,7 +51,14 @@
                         videoTag = common.createElement("video");
 
                         bean.on(videoTag, "play", function () {
-                            player.trigger('resume', [player]);
+                            if (preventDashResume) {
+                                // doing this here using variable
+                                // avoids resume firing
+                                videoTag.pause();
+                                preventDashResume = false;
+                            } else {
+                                player.trigger('resume', [player]);
+                            }
                         });
                         bean.on(videoTag, "pause", function () {
                             player.trigger('pause', [player]);
@@ -110,6 +118,10 @@
                         mediaPlayer.startup();
                         mediaPlayer.attachView(videoTag);
                         mediaPlayer.attachSource(video.src);
+
+                        player.on("beforeseek", function () {
+                            preventDashResume = player.conf.autoplay && player.paused;
+                        });
                     },
 
                     resume: function () {
@@ -143,7 +155,6 @@
                         player.trigger('unload', [player]);
                     }
                 };
-
 
             return engine;
         };

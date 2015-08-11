@@ -28,6 +28,7 @@
     flowplayer.engine.mpegdash = function (player, root) {
         var mediaPlayer,
             videoTag,
+            preventDashResume = false,
             context = new Dash.di.DashContext();
 
         return {
@@ -44,7 +45,14 @@
                 root.find('video').remove();
                 videoTag = $("<video/>")[0];
                 $(videoTag).on('play', function () {
-                    root.trigger('resume', [player]);
+                    if (preventDashResume) {
+                        // doing this here using variable
+                        // avoids resume firing
+                        videoTag.pause();
+                        preventDashResume = false;
+                    } else {
+                        root.trigger('resume', [player]);
+                    }
                 });
                 $(videoTag).on('pause', function () {
                     root.trigger('pause', [player]);
@@ -99,6 +107,13 @@
                 mediaPlayer.startup();
                 mediaPlayer.attachView(videoTag);
                 mediaPlayer.attachSource(video.src);
+
+                player.bind("beforeseek", function () {
+                    // prevent resume after seek in paused state
+                    // conf.autoplay includes conf.splash because splash sets
+                    // autoplay
+                    preventDashResume = player.conf.autoplay && player.paused;
+                });
             },
             resume: function () {
                 videoTag.play();
