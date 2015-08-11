@@ -28,7 +28,6 @@
                 common = flowplayer.common,
                 mediaPlayer,
                 videoTag,
-                dashstop = false,
                 context = new Dash.di.DashContext(),
 
                 engine = {
@@ -125,19 +124,6 @@
                     },
 
                     seek: function (time) {
-                        if (videoTag.paused) {
-                            // dash.js always resumes playback after seek
-                            bean.one(videoTag, "seeked.dashpaused", function () {
-                                setTimeout(function () {
-                                    videoTag.pause();
-                                    // stop seeks to 0 causing dash.js to resume
-                                    // see stop handle below
-                                    if (dashstop) {
-                                        player.trigger('stop', [player]);
-                                    }
-                                }, 0);
-                            });
-                        }
                         videoTag.currentTime = time;
                     },
 
@@ -161,14 +147,6 @@
                     }
                 };
 
-
-            // see seek implementation above
-            player.on("stop", function (e) {
-                if (!dashstop) {
-                    e.preventDefault();
-                }
-                dashstop = !dashstop;
-            });
 
             return engine;
         };

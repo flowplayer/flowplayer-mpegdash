@@ -28,16 +28,7 @@
     flowplayer.engine.mpegdash = function (player, root) {
         var mediaPlayer,
             videoTag,
-            dashstop = false,
             context = new Dash.di.DashContext();
-
-        // see seek implementation below
-        player.bind("stop", function (e) {
-            if (!dashstop) {
-                e.preventDefault();
-            }
-            dashstop = !dashstop;
-        });
 
         return {
             pick: function (sources) {
@@ -119,19 +110,6 @@
                 videoTag.pause();
             },
             seek: function (time) {
-                if (videoTag.paused) {
-                    // dash.js always resumes playback after seek
-                    $(videoTag).one("seeked.dashpaused", function () {
-                        setTimeout(function () {
-                            videoTag.pause()
-                            // stop seeks to 0 causing dash.js to resume
-                            // see stop handle above
-                            if (dashstop) {
-                                player.trigger('stop', [player]);
-                            }
-                        }, 0);
-                    });
-                }
                 videoTag.currentTime = time;
             },
             volume: function (level) {
