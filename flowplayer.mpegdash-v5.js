@@ -101,9 +101,6 @@
                 mediaPlayer.attachSource(video.src);
             },
             resume: function () {
-                if (player.finished) {
-                    videoTag.currentTime = 0;
-                }
                 videoTag.play();
             },
             pause: function () {
