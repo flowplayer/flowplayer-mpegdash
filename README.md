@@ -42,6 +42,14 @@ Features
 - engine is only loaded if the client supports MPEG-DASH
 - also available for Flowplayer version 5.x ([demo](http://demos.flowplayer.org/v5/api/dash.html))
 
+Stream compatibility
+--------------------
+
+MPEG-DASH is not a fixed standard yet, but a moving target. As the plugin is based on dash.js stream
+compatibility can be cross-checked in the latest
+[dash.js sample player](http://dashif.org/reference/players/javascript/index.html).
+
+
 Known issues
 ------------
 
