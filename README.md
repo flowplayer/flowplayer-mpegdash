@@ -53,6 +53,4 @@ compatibility can be cross-checked in the latest
 Known issues
 ------------
 
-- does not support live streams yet
-- Mac OS Safari does not detect end of video properly - see:
-  https://github.com/Dash-Industry-Forum/dash.js/issues/694
+- encrypted streams not yet supported
