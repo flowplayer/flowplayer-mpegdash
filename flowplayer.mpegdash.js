@@ -119,10 +119,10 @@
                         mediaPlayer.attachView(videoTag);
                         mediaPlayer.attachSource(video.src);
 
-                        // Android requires extra load, like iPad
-                        // https://github.com/flowplayer/flowplayer/issues/910
-                        if (!flowplayer.support.zeropreload && player.conf.autoplay) {
-                            videoTag.load();
+                        if (player.conf.autoplay) {
+                            // https://github.com/flowplayer/flowplayer/issues/910
+                            // Android and Win Firefox
+                            videoTag.play();
                         }
 
                         player.on("beforeseek", function () {
