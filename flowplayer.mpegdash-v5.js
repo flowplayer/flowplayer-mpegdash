@@ -108,6 +108,12 @@
                 mediaPlayer.attachView(videoTag);
                 mediaPlayer.attachSource(video.src);
 
+                // Android requires extra load, like iPad
+                // https://github.com/flowplayer/flowplayer/issues/910
+                if (!flowplayer.support.zeropreload && player.conf.autoplay) {
+                    videoTag.load();
+                }
+
                 player.bind("beforeseek", function () {
                     // prevent resume after seek in paused state
                     // conf.autoplay includes conf.splash because splash sets
