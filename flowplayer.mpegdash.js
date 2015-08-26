@@ -113,7 +113,7 @@
                         common.prepend(common.find(".fp-player", root)[0], videoTag);
 
                         mediaPlayer = new MediaPlayer(context);
-                        mediaPlayer.setAutoPlay(player.conf.autoplay || player.conf.splash);
+                        mediaPlayer.setAutoPlay(player.conf.autoplay);
                         mediaPlayer.setScheduleWhilePaused(true);
                         mediaPlayer.startup();
                         mediaPlayer.attachView(videoTag);

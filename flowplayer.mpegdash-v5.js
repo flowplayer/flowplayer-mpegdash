@@ -103,7 +103,7 @@
 
                 mediaPlayer = new MediaPlayer(context);
                 mediaPlayer.setScheduleWhilePaused(true);
-                mediaPlayer.setAutoPlay(player.conf.autoplay || player.conf.splash);
+                mediaPlayer.setAutoPlay(player.conf.autoplay);
                 mediaPlayer.startup();
                 mediaPlayer.attachView(videoTag);
                 mediaPlayer.attachSource(video.src);
