@@ -172,7 +172,9 @@
     };
     // only load engine if it can be used
     if (clientSupport) {
-        flowplayer.engines.push(engineImpl);
+        // put on top of eninge stack
+        // so mpegedash is tested before html5
+        flowplayer.engines.unshift(engineImpl);
     }
 
 }());
