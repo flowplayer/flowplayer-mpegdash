@@ -35,7 +35,8 @@ A fully documented demo can be found [here](http://demos.flowplayer.org/api/dash
 Features
 --------
 
-- packs a compatibility tested version of
+- packs a compatibility tested version - current:
+  https://github.com/Dash-Industry-Forum/dash.js/commit/653a32bca9ce - of
   [dash.js](https://github.com/Dash-Industry-Forum/dash.js) by the
   [Dash Industry Forum](http://dashif.org/software/)
 - seeking in paused state does not resume like dash.js vanilla
@@ -49,10 +50,23 @@ MPEG-DASH is not a fixed standard yet, but a moving target. As the plugin is bas
 compatibility can be cross-checked in the latest
 [dash.js sample player](http://dashif.org/reference/players/javascript/index.html).
 
+GPAC
+----
+
+If [MP4Box](https://gpac.wp.mines-telecom.fr/mp4box/dash/) by
+[GPAC](https://gpac.wp.mines-telecom.fr) is used to create the MPEG-DASH streams our current
+recommendations are:
+
+- do not use the `-segment-timeline` option, it may result in end of video detection issues with
+  dash.js
+- set `-bs-switching 'no'` if you want the streams to work in Safari
+
+Disclaimer: The above recommendations are based on
+`MP4Box - GPAC version 0.5.2-DEV-rev566-g4c06d0f-master`. Other versions may yield different results
+with different consequences. They might also be affected by other members of a transcoding
+toolchain.
 
 Known issues
 ------------
 
-- Mac OS Safari does not detect end of video properly - see:
-  https://github.com/Dash-Industry-Forum/dash.js/issues/694
 - encrypted streams not yet supported
