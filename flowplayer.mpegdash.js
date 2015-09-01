@@ -105,25 +105,16 @@
                         common.prepend(common.find(".fp-player", root)[0], videoTag);
 
                         mediaPlayer = new MediaPlayer(context);
-                        mediaPlayer.setAutoPlay(player.conf.autoplay);
+                        mediaPlayer.setAutoPlay(false); // handled by fp API
                         mediaPlayer.setScheduleWhilePaused(true);
                         mediaPlayer.startup();
                         mediaPlayer.attachView(videoTag);
                         mediaPlayer.attachSource(video.src);
 
                         if (player.conf.autoplay) {
-                            player.on("beforeseek", function (e, api, pos) {
-                                // when seeking to unbuffered positions
-                                // dash.js resumes
-                                if (api.paused && pos > api.video.buffer) {
-                                    bean.one(videoTag, "play", function () {
-                                        videoTag.pause();
-                                    });
-                                }
-                            });
-
-                            // https://github.com/flowplayer/flowplayer/issues/910
-                            // Android and Win Firefox
+                            // let the fp API take care of autoplay
+                            // otherwise dash.js triggers play when seeking to
+                            // unbuffered positions
                             videoTag.play();
                         }
                     },
