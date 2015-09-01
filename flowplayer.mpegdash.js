@@ -28,7 +28,6 @@
                 common = flowplayer.common,
                 mediaPlayer,
                 videoTag,
-                preventDashResume = false,
                 context = new Dash.di.DashContext(),
 
                 engine = {
@@ -51,14 +50,7 @@
                         videoTag = common.createElement("video");
 
                         bean.on(videoTag, "play", function () {
-                            if (preventDashResume) {
-                                // doing this here using variable
-                                // avoids resume firing
-                                videoTag.pause();
-                                preventDashResume = false;
-                            } else {
-                                player.trigger('resume', [player]);
-                            }
+                            player.trigger('resume', [player]);
                         });
                         bean.on(videoTag, "pause", function () {
                             player.trigger('pause', [player]);
@@ -120,14 +112,20 @@
                         mediaPlayer.attachSource(video.src);
 
                         if (player.conf.autoplay) {
+                            player.on("beforeseek", function (e, api, pos) {
+                                // when seeking to unbuffered positions
+                                // dash.js resumes
+                                if (api.paused && pos > api.video.buffer) {
+                                    bean.one(videoTag, "play", function () {
+                                        videoTag.pause();
+                                    });
+                                }
+                            });
+
                             // https://github.com/flowplayer/flowplayer/issues/910
                             // Android and Win Firefox
                             videoTag.play();
                         }
-
-                        player.on("beforeseek", function () {
-                            preventDashResume = player.conf.autoplay && player.paused;
-                        });
                     },
 
                     resume: function () {

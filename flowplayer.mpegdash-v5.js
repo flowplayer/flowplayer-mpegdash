@@ -28,7 +28,6 @@
     flowplayer.engine.mpegdash = function (player, root) {
         var mediaPlayer,
             videoTag,
-            preventDashResume = false,
             context = new Dash.di.DashContext();
 
         return {
@@ -45,14 +44,7 @@
                 root.find('video').remove();
                 videoTag = $("<video/>")[0];
                 $(videoTag).on('play', function () {
-                    if (preventDashResume) {
-                        // doing this here using variable
-                        // avoids resume firing
-                        videoTag.pause();
-                        preventDashResume = false;
-                    } else {
-                        root.trigger('resume', [player]);
-                    }
+                    root.trigger('resume', [player]);
                 });
                 $(videoTag).on('pause', function () {
                     root.trigger('pause', [player]);
@@ -109,14 +101,20 @@
                 mediaPlayer.attachSource(video.src);
 
                 if (player.conf.autoplay) {
+                    player.bind("beforeseek", function (e, api, pos) {
+                        // when seeking to unbuffered positions
+                        // dash.js resumes
+                        if (api.paused && pos > api.video.buffer) {
+                            $(videoTag).one("play", function () {
+                                videoTag.pause();
+                            });
+                        }
+                    });
+
                     // https://github.com/flowplayer/flowplayer/issues/910
                     // Android and Win Firefox
                     videoTag.play();
                 }
-
-                player.bind("beforeseek", function () {
-                    preventDashResume = player.conf.autoplay && player.paused;
-                });
             },
             resume: function () {
                 videoTag.play();
