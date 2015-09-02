@@ -105,6 +105,10 @@
                         common.prepend(common.find(".fp-player", root)[0], videoTag);
 
                         mediaPlayer = new MediaPlayer(context);
+
+                        // caching can cause failures in playlists
+                        // for the moment disable entirely
+                        mediaPlayer.enableLastBitrateCaching(false);
                         mediaPlayer.setAutoPlay(false); // handled by fp API
                         mediaPlayer.setScheduleWhilePaused(true);
                         mediaPlayer.startup();
