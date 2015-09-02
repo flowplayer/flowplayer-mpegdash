@@ -55,10 +55,8 @@ GPAC
 
 If [MP4Box](https://gpac.wp.mines-telecom.fr/mp4box/dash/) by
 [GPAC](https://gpac.wp.mines-telecom.fr) is used to create the MPEG-DASH streams our current
-recommendations are:
+recommendation is:
 
-- do not use the `-segment-timeline` option, it may result in end of video detection issues with
-  dash.js
 - set `-bs-switching 'no'` if you want the streams to work in Safari
 
 Disclaimer: The above recommendations are based on
