@@ -70,3 +70,5 @@ Known issues
 ------------
 
 - encrypted streams not yet supported
+- audio AAC high profile is not supported on (some) Android devices, in spite of the fact that they
+  claim to support it 
