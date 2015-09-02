@@ -94,13 +94,17 @@
                 root.prepend(videoTag);
 
                 mediaPlayer = new MediaPlayer(context);
+                mediaPlayer.startup();
+                mediaPlayer.attachView(videoTag);
+
                 // caching can cause failures in playlists
                 // for the moment disable entirely
                 mediaPlayer.enableLastBitrateCaching(false);
-                mediaPlayer.setAutoPlay(false); // handled by fp API
+                // handled by fp API
+                mediaPlayer.setAutoPlay(false);
+                // for seeking in paused state
                 mediaPlayer.setScheduleWhilePaused(true);
-                mediaPlayer.startup();
-                mediaPlayer.attachView(videoTag);
+
                 mediaPlayer.attachSource(video.src);
 
                 if (player.conf.autoplay) {
