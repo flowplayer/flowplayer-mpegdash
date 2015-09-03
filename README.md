@@ -50,16 +50,17 @@ MPEG-DASH is not a fixed standard yet, but a moving target. As the plugin is bas
 compatibility can be cross-checked in the latest
 [dash.js sample player](http://dashif.org/reference/players/javascript/index.html).
 
-GPAC
-----
+## GPAC
 
 If [MP4Box](https://gpac.wp.mines-telecom.fr/mp4box/dash/) by
 [GPAC](https://gpac.wp.mines-telecom.fr) is used to create the MPEG-DASH streams our current
 recommendation is:
 
-- set `-bs-switching 'no'` if you want the streams to work in Safari
+- `-bs-switching 'merge'` or `-bs-switching 'no'` should be used to make the streams work in Mac OS
+  Safari and Windows Internet Explorer. These clients do not support the avc3 codec version
+  resulting from the default `inband` value.
 
-Disclaimer: The above recommendations are based on
+Disclaimer: The above recommendation is based on
 `MP4Box - GPAC version 0.5.2-DEV-rev566-g4c06d0f-master`. Other versions may yield different results
 with different consequences. They might also be affected by other members of a transcoding
 toolchain.
