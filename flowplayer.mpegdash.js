@@ -67,6 +67,13 @@
                                 url: videoTag.currentSrc
                             });
                             player.trigger('ready', [player, video]);
+
+                            if (player.conf.autoplay) {
+                                // let the fp API take care of autoplay
+                                // otherwise dash.js triggers play when seeking to
+                                // unbuffered positions
+                                videoTag.play();
+                            }
                         });
                         bean.on(videoTag, "seeked", function () {
                             player.trigger('seek', [player, videoTag.currentTime]);
@@ -117,13 +124,6 @@
                         mediaPlayer.setScheduleWhilePaused(true);
 
                         mediaPlayer.attachSource(video.src);
-
-                        if (player.conf.autoplay) {
-                            // let the fp API take care of autoplay
-                            // otherwise dash.js triggers play when seeking to
-                            // unbuffered positions
-                            videoTag.play();
-                        }
                     },
 
                     resume: function () {
