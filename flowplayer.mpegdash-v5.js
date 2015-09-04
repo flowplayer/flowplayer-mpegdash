@@ -55,6 +55,13 @@
                 $(videoTag).on('loadeddata', function () {
                     video.duration = video.seekable = videoTag.duration;
                     root.trigger('ready', [player, video]);
+
+                    if (player.conf.autoplay) {
+                        // let the fp API take care of autoplay
+                        // otherwise dash.js triggers play when seeking to
+                        // unbuffered positions
+                        videoTag.play();
+                    }
                 });
                 $(videoTag).on('seeked', function () {
                     root.trigger('seek', [player, videoTag.currentTime]);
@@ -106,13 +113,6 @@
                 mediaPlayer.setScheduleWhilePaused(true);
 
                 mediaPlayer.attachSource(video.src);
-
-                if (player.conf.autoplay) {
-                    // let the fp API take care of autoplay
-                    // otherwise dash.js triggers play when seeking to
-                    // unbuffered positions
-                    videoTag.play();
-                }
             },
             resume: function () {
                 videoTag.play();
@@ -133,11 +133,8 @@
                 root.trigger('speed', [player, val]);
             },
             unload: function () {
-                if (mediaPlayer) {
-                    mediaPlayer.reset();
-                }
-                $(videoTag).remove();
                 root.trigger("unload", [player]);
+                mediaPlayer.reset();
             }
 
         };
