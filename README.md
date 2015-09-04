@@ -50,7 +50,7 @@ MPEG-DASH is not a fixed standard yet, but a moving target. As the plugin is bas
 compatibility can be cross-checked in the latest
 [dash.js sample player](http://dashif.org/reference/players/javascript/index.html).
 
-## GPAC
+### GPAC
 
 If [MP4Box](https://gpac.wp.mines-telecom.fr/mp4box/dash/) by
 [GPAC](https://gpac.wp.mines-telecom.fr) is used to create the MPEG-DASH streams our current
