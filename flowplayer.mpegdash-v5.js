@@ -112,6 +112,21 @@
                 // for seeking in paused state
                 mediaPlayer.setScheduleWhilePaused(true);
 
+                mediaPlayer.addEventListener("error", function (e) {
+                    var fperr;
+                    switch (e.error) {
+                    case "download":
+                        fperr = 4;
+                        break;
+                    case "mediasource": case "manifestError":
+                        fperr = 3;
+                        break;
+                    default:
+                        fperr = 5;
+                    }
+                    player.trigger('error', [player, {code: fperr, video: video}]);
+                }, false);
+
                 mediaPlayer.attachSource(video.src);
             },
             resume: function () {
