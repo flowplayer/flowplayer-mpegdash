@@ -111,18 +111,43 @@
                 mediaPlayer.setScheduleWhilePaused(true);
 
                 mediaPlayer.addEventListener("error", function (e) {
-                    var fperr;
+                    var fperr,
+                        errobj;
                     switch (e.error) {
                     case "download":
                         fperr = 4;
                         break;
-                    case "mediasource": case "manifestError":
-                        fperr = 3;
+                    case "manifestError":
+                        fperr = 5;
+                        break;
+                    case "mediasource":
+                        switch (e.event) {
+                        case "MEDIA_ERR_DECODE":
+                            fperr = 3;
+                            break;
+                        case "MEDIA_ERR_SRC_NOT_SUPPORTED":
+                            fperr = 5;
+                            break;
+                        case "MEDIA_ERR_NETWORK":
+                            fperr = 2;
+                            break;
+                        case "MEDIA_ERR_ABORTED":
+                            fperr = 1;
+                            break;
+                        default:
+                            fperr = 0;
+                        }
                         break;
                     default:
-                        fperr = 5;
+                        fperr = 0;
                     }
-                    player.trigger('error', [player, {code: fperr, video: video}]);
+                    if (fperr) {
+                        errobj = { code: fperr };
+                        if (fperr == 3) {
+                            errobj.video = $.extend(video, {src: video.src, url: video.src});
+                        }
+                        player.trigger('error', [player, errobj]);
+                    }
                 }, false);
 
                 mediaPlayer.attachSource(video.src);
