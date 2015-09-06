@@ -172,7 +172,9 @@
             },
             unload: function () {
                 root.trigger("unload", [player]);
-                mediaPlayer.reset();
+                if (mediaPlayer) {
+                    mediaPlayer.reset();
+                }
             }
 
         };
