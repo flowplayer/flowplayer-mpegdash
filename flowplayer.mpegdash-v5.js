@@ -22,7 +22,6 @@
         return;
     }
 
-
     flowplayer.engine.mpegdash = function (player, root) {
         var mediaPlayer,
             videoTag,
@@ -53,6 +52,19 @@
                 $(videoTag).on('loadeddata', function () {
                     video.duration = video.seekable = videoTag.duration;
                     root.trigger('ready', [player, video]);
+
+                    // fix timing for poster class
+                    var poster = "is-poster";
+                    if (root.hasClass(poster)) {
+                        player.bind("stop.dashposter", function () {
+                            setTimeout(function () {
+                                root.addClass(poster);
+                                $(videoTag).one("play.dashposter", function () {
+                                    root.removeClass(poster);
+                                });
+                            }, 0);
+                        });
+                    }
 
                     if (player.conf.autoplay) {
                         // let the fp API take care of autoplay

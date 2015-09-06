@@ -75,6 +75,19 @@
                             });
                             player.trigger('ready', [player, video]);
 
+                            // fix timing for poster class
+                            var poster = "is-poster";
+                            if (common.hasClass(root, poster)) {
+                                player.on("stop.dashposter", function () {
+                                    setTimeout(function () {
+                                        common.addClass(root, poster);
+                                        bean.one(videoTag, "play.dashposter", function () {
+                                            common.removeClass(root, poster);
+                                        });
+                                    }, 0);
+                                });
+                            }
+
                             if (player.conf.autoplay) {
                                 // let the fp API take care of autoplay
                                 // otherwise dash.js triggers play when seeking to
