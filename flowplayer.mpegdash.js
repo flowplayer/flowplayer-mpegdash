@@ -19,9 +19,15 @@
 
 (function () {
     var win = window,
-        clientSupport = flowplayer.support.video &&
-                win.MediaSource &&
-                win.MediaSource.isTypeSupported('video/mp4; codecs="avc1.640029, mp4a.40.5"'),
+        clientSupport = flowplayer.support.video && win.MediaSource,
+        /*
+          WARNING: MediaSource.isTypeSupported very inconsistent!
+          e.g. Safari ignores codecs entirely, even bogus, like codecs="XYZ"
+          example avc3: avc3.4d401f, mp4a.40.5
+          example aac_lc: avc1.640029, mp4a.40.2
+        */
+        dashconf = {type: "video/mp4", codecs: "avc1.640029, mp4a.40.5"},
+        extend = flowplayer.extend,
 
         engineImpl = function mpegdashEngine(player, root) {
             var bean = flowplayer.bean,
@@ -59,7 +65,7 @@
                             player.trigger('progress', [player, videoTag.currentTime]);
                         });
                         bean.on(videoTag, "loadeddata", function () {
-                            flowplayer.extend(video, {
+                            extend(video, {
                                 duration: videoTag.duration,
                                 seekable: videoTag.seekable.end(null),
                                 width: videoTag.videoWidth,
@@ -198,13 +204,17 @@
             return engine;
         };
 
-
-    engineImpl.engineName = 'mpegdash';
-    engineImpl.canPlay = function (type) {
-        return type == "application/dash+xml";
-    };
-    // only load engine if it can be used
     if (clientSupport) {
+        // only load engine if it can be used
+        engineImpl.engineName = 'mpegdash';
+        engineImpl.canPlay = function (type, conf) {
+            var iconf = extend({}, dashconf, conf.mpegdash);
+            if (type == "application/dash+xml") {
+                return win.MediaSource.isTypeSupported(iconf.type + '; codecs="' + iconf.codecs + '"');
+            }
+            return false;
+        };
+
         // put on top of eninge stack
         // so mpegedash is tested before html5
         flowplayer.engines.unshift(engineImpl);
