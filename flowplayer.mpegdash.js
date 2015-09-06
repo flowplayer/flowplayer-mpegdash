@@ -19,6 +19,7 @@
 
 (function () {
     var win = window,
+        engineName = "mpegdash",
         clientSupport = flowplayer.support.video && win.MediaSource,
         /*
           WARNING: MediaSource.isTypeSupported very inconsistent!
@@ -37,7 +38,7 @@
                 context = new Dash.di.DashContext(),
 
                 engine = {
-                    engineName: engineImpl.engineName,
+                    engineName: engineName,
 
                     pick: function (sources) {
                         var i,
@@ -206,7 +207,7 @@
 
     if (clientSupport) {
         // only load engine if it can be used
-        engineImpl.engineName = 'mpegdash';
+        engineImpl.engineName = engineName; // must be exposed
         engineImpl.canPlay = function (type, conf) {
             var iconf = extend({}, dashconf, conf.mpegdash);
             if (type == "application/dash+xml") {
