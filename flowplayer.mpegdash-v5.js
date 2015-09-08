@@ -38,6 +38,8 @@
                 }
             },
             load: function (video) {
+                var livestartpos = 0;
+
                 root.find('video').remove();
                 videoTag = $("<video/>")[0];
                 $(videoTag).on('play', function () {
@@ -46,8 +48,13 @@
                 $(videoTag).on('pause', function () {
                     root.trigger('pause', [player]);
                 });
+                $(videoTag).one('timeupdate', function () {
+                    if (player.conf.live || root.hasClass("is-live")) {
+                        livestartpos = videoTag.currentTime;
+                    }
+                });
                 $(videoTag).on('timeupdate', function () {
-                    root.trigger('progress', [player, videoTag.currentTime]);
+                    root.trigger('progress', [player, videoTag.currentTime - livestartpos]);
                 });
                 $(videoTag).on('loadeddata', function () {
                     video.duration = video.seekable = videoTag.duration;

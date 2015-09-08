@@ -53,6 +53,8 @@
                     },
 
                     load: function (video) {
+                        var livestartpos = 0;
+
                         common.removeNode(common.findDirect("video", root)[0] || common.find(".fp-player > video", root)[0]);
                         videoTag = common.createElement("video");
 
@@ -62,8 +64,13 @@
                         bean.on(videoTag, "pause", function () {
                             player.trigger('pause', [player]);
                         });
+                        bean.one(videoTag, "timeupdate", function () {
+                            if (video.live) {
+                                livestartpos = videoTag.currentTime;
+                            }
+                        });
                         bean.on(videoTag, "timeupdate", function () {
-                            player.trigger('progress', [player, videoTag.currentTime]);
+                            player.trigger('progress', [player, videoTag.currentTime - livestartpos]);
                         });
                         bean.on(videoTag, "loadeddata", function () {
                             extend(video, {
