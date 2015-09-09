@@ -190,6 +190,9 @@
                 root.trigger('speed', [player, val]);
             },
             unload: function () {
+                if (player.conf.live || root.hasClass("is-live")) {
+                    videoTag.play();
+                }
                 root.trigger("unload", [player]);
                 if (mediaPlayer) {
                     mediaPlayer.reset();

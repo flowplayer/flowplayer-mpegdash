@@ -217,6 +217,9 @@
                     },
 
                     unload: function () {
+                        if (player.video.live && player.paused) {
+                            videoTag.play();
+                        }
                         player.trigger('unload', [player]);
                         mediaPlayer.reset();
                     }
