@@ -169,6 +169,10 @@
                     }
                 }, false);
 
+                player.bind("error", function () {
+                    mediaPlayer.reset();
+                });
+
                 mediaPlayer.attachSource(video.src);
             },
             resume: function () {

@@ -190,6 +190,10 @@
                             }
                         }, false);
 
+                        player.on("error", function () {
+                            mediaPlayer.reset();
+                        });
+
                         mediaPlayer.attachSource(video.src);
                     },
 
