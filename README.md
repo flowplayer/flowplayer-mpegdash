@@ -36,7 +36,7 @@ Features
 --------
 
 - packs a compatibility tested version - current:
-  https://github.com/Dash-Industry-Forum/dash.js/commit/042ea1d896c4 - of
+  https://github.com/Dash-Industry-Forum/dash.js/commit/4af1b6203f20 - of
   [dash.js](https://github.com/Dash-Industry-Forum/dash.js) by the
   [Dash Industry Forum](http://dashif.org/software/)
 - seeking in paused state does not resume like dash.js vanilla
