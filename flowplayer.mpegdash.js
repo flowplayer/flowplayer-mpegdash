@@ -21,13 +21,6 @@
     var win = window,
         engineName = "mpegdash",
         clientSupport = flowplayer.support.video && win.MediaSource,
-        /*
-          WARNING: MediaSource.isTypeSupported very inconsistent!
-          e.g. Safari ignores codecs entirely, even bogus, like codecs="XYZ"
-          example avc3: avc3.4d401f, mp4a.40.5
-          example aac_lc: avc1.640029, mp4a.40.2
-        */
-        dashconf = {type: "video/mp4", codecs: "avc1.640029, mp4a.40.5"},
         extend = flowplayer.extend,
 
         engineImpl = function mpegdashEngine(player, root) {
@@ -236,9 +229,21 @@
         // only load engine if it can be used
         engineImpl.engineName = engineName; // must be exposed
         engineImpl.canPlay = function (type, conf) {
-            var iconf = extend({}, dashconf, conf.mpegdash);
+            // inject dash conf at earliest opportunity
+            var dashconf = conf.dash;
+
+            /*
+              WARNING: MediaSource.isTypeSupported very inconsistent!
+              e.g. Safari ignores codecs entirely, even bogus, like codecs="XYZ"
+              example avc3: avc3.4d401f, mp4a.40.5
+              example aac_lc: avc1.640029, mp4a.40.2
+            */
+            conf.dash = extend({
+                type: "video/mp4",
+                codecs: "avc1.640029, mp4a.40.5"
+            }, dashconf);
             if (type == "application/dash+xml") {
-                return win.MediaSource.isTypeSupported(iconf.type + '; codecs="' + iconf.codecs + '"');
+                return win.MediaSource.isTypeSupported(conf.dash.type + '; codecs="' + conf.dash.codecs + '"');
             }
             return false;
         };
