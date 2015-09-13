@@ -69,5 +69,6 @@ Known issues
 ------------
 
 - encrypted streams not yet supported
-- audio AAC high profile is not supported on (some) Android devices, in spite of the fact that they
-  claim to support it 
+- `MediaSource` video type and codecs feature detection via JavaScript is broken in many clients in
+  a similar fashion as for
+  [SOURCE/VIDEO tag type attributes](http://demos.flowplayer.org/videotest/canplay.html).
