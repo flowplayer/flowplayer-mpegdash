@@ -58,7 +58,7 @@
                         bean.on(videoTag, "pause", function () {
                             player.trigger('pause', [player]);
                         });
-                        bean.one(videoTag, "timeupdate", function () {
+                        bean.one(videoTag, "timeupdate.dashlivestart", function () {
                             if (video.live) {
                                 livestartpos = videoTag.currentTime;
                             }

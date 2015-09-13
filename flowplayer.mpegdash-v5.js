@@ -48,7 +48,7 @@
                 $(videoTag).on('pause', function () {
                     root.trigger('pause', [player]);
                 });
-                $(videoTag).one('timeupdate', function () {
+                $(videoTag).one('timeupdate.dashlivestart', function () {
                     if (player.conf.live || root.hasClass("is-live")) {
                         livestartpos = videoTag.currentTime;
                     }
