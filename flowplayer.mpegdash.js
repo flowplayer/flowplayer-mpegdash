@@ -20,7 +20,8 @@
 (function () {
     var win = window,
         engineName = "mpegdash",
-        clientSupport = flowplayer.support.video && win.MediaSource,
+        support = flowplayer.support,
+        clientSupport = support.video && win.MediaSource,
         extend = flowplayer.extend,
 
         engineImpl = function mpegdashEngine(player, root) {
@@ -123,6 +124,13 @@
                         });
                         bean.on(videoTag, "ended", function () {
                             player.trigger('finish', [player]);
+                            if (support.browser.safari && !player.conf.autoplay) {
+                                bean.one(videoTag, "seeked.dashreplay", function () {
+                                    if (!videoTag.currentTime) {
+                                        videoTag.play();
+                                    }
+                                });
+                            }
                         });
                         bean.on(videoTag, "volumechange", function () {
                             player.trigger('volume', [player, videoTag.volume]);

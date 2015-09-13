@@ -108,6 +108,14 @@
                 });
                 $(videoTag).on('ended', function () {
                     root.trigger('finish', [player]);
+                    if (!player.conf.autoplay) {
+                        // replay fix for Safari
+                        bean.one(videoTag, "seeked.dashreplay", function () {
+                            if (!videoTag.currentTime) {
+                                videoTag.play();
+                            }
+                        });
+                    }
                 });
                 $(videoTag).on('volumechange', function () {
                     root.trigger('volume', [player, videoTag.volume]);
