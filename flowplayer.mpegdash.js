@@ -235,12 +235,13 @@
             /*
               WARNING: MediaSource.isTypeSupported very inconsistent!
               e.g. Safari ignores codecs entirely, even bogus, like codecs="XYZ"
-              example avc3: avc3.4d401f, mp4a.40.5
-              example aac_lc: avc1.640029, mp4a.40.2
+              example avc3 main level 3.1 + aac_he: avc3.4d401f; mp4a.40.5
+              example avc1 high level 4.1 + aac_lc: avc1.640029; mp4a.40.2
+              default: avc1 baseline level 3.0 + aac_lc
             */
             conf.dash = extend({
                 type: "video/mp4",
-                codecs: "avc1.640029, mp4a.40.5"
+                codecs: "avc1.42c01e, mp4a.40.2"
             }, dashconf);
             if (type == "application/dash+xml") {
                 return win.MediaSource.isTypeSupported(conf.dash.type + '; codecs="' + conf.dash.codecs + '"');
