@@ -161,7 +161,7 @@
                         fperr = 0;
                     }
                     if (fperr) {
-                        errobj = { code: fperr };
+                        errobj = {code: fperr};
                         if (fperr == 3) {
                             errobj.video = $.extend(video, {src: video.src, url: video.src});
                         }
