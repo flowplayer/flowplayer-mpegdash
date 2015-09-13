@@ -48,7 +48,7 @@ Stream compatibility
 
 MPEG-DASH is not a fixed standard yet, but a moving target. As the plugin is based on dash.js stream
 compatibility can be cross-checked in the latest
-[dash.js sample player](http://dashif.org/reference/players/javascript/index.html).
+[dash.js sample player](http://dashif.org/reference/players/javascript/v1.5.0/samples/dash-if-reference-player/).
 
 ### GPAC
 
