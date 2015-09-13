@@ -27,6 +27,26 @@ clip: {
 }
 ```
 
+Plugin configuration
+--------------------
+
+The plugin provides the following [player option](https://flowplayer.org/docs/setup.html#player-options):
+
+| option | type | description | html configurable |
+| :----- | :--- | :---------- | :---------------- |
+| `dash` | `object` | Signals the browser which playback capabilites are expected of its `MediaSource` implementation. | no |
+
+The `dash` configuration object accepts the following parameters:
+
+| option | default value | description |
+| :----- | :------------ | :---------- |
+| `type` | `video/mp4` | The video format the browser's `MediaSource` implementation should be able to play. |
+| `codecs` | `avc1.42c01e, mp4a.40.2` | The codecs the browser's `MediaSource` implementation should be able to play. |
+
+**Caveat:** codecs and even type feature detection and evaluation is broken in many browsers.
+Changing the configuration may have no or misleading effects. Not useful in production, only to a
+certain extent for debugging.
+
 Demo
 ----
 
