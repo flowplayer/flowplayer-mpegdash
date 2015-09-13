@@ -170,8 +170,11 @@
                     }
                     if (fperr) {
                         errobj = {code: fperr};
-                        if (fperr == 3) {
-                            errobj.video = $.extend(video, {src: video.src, url: video.src});
+                        if (fperr > 2) {
+                            errobj.video = extend(video, {
+                                src: video.src,
+                                url: e.event.url || video.src
+                            });
                         }
                         player.trigger('error', [player, errobj]);
                     }
