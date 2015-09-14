@@ -59,7 +59,6 @@ Features
   https://github.com/Dash-Industry-Forum/dash.js/commit/4af1b6203f20 - of
   [dash.js](https://github.com/Dash-Industry-Forum/dash.js) by the
   [Dash Industry Forum](http://dashif.org/software/)
-- seeking in paused state does not resume like dash.js vanilla
 - engine is only loaded if the client supports MPEG-DASH
 - also available for Flowplayer version 5.x ([demo](http://demos.flowplayer.org/v5/api/dash.html))
 
