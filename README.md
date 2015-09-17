@@ -84,6 +84,52 @@ Disclaimer: The above recommendation is based on
 with different consequences. They might also be affected by other members of a transcoding
 toolchain.
 
+Debugging
+---------
+
+A quick way to find out whether the currently packed version of dash.js is causing a problem is to
+load the components separately using the latest development build or release from the dash.js CDN:
+
+```html
+<script src="//releases.flowplayer.org/6.0.3/flowplayer.min.js"></script>
+
+<!-- load dash.js latest release -->
+<!-- <script src="//cdn.dashjs.org/v1.5.0/dash.all.js"></script> -->
+
+<!-- or load dash.js latest dev build -->
+<script src="//cdn.dashjs.org/latest/dash.all.js"></script>
+
+<!-- load latest plugin standalone -->
+<script src="//releases.flowplayer.org/mpegdash/flowplayer.mpegdash.js"></script>
+```
+
+Conversely, to find out whether there's a problem with the actual plugin component can be tested by
+exclusion with a simple page using bare dash.js, like:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+
+<script src="//releases.flowplayer.org/mpegdash/dash.all.js"></script>
+
+<script>
+window.onload = function () {
+  Dash.createAll();
+};
+</script>
+
+</head>
+<body>
+
+<video class="dashjs-player" controls>
+  <source type="application/dash+xml" src="//example.com/testvideo.mpd">
+</video>
+
+</body>
+</html>
+```
+
 Known issues
 ------------
 
