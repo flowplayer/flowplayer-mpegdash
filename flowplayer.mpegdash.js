@@ -260,7 +260,7 @@
             return false;
         };
 
-        // put on top of eninge stack
+        // put on top of engine stack
         // so mpegedash is tested before html5
         flowplayer.engines.unshift(engineImpl);
     }
