@@ -1,3 +1,6 @@
+/*jslint browser: true, for: true */
+/*global Dash, flowplayer, jQuery, MediaPlayer, window */
+
 /*!
 
    MPEG-DASH engine plugin for Flowplayer HTML5 version 5.x
@@ -18,6 +21,7 @@
 */
 
 (function ($) {
+    "use strict";
     if (!flowplayer.support.video || !window.MediaSource) {
         return;
     }
@@ -31,7 +35,7 @@
             pick: function (sources) {
                 var i;
 
-                for (i = 0; i < sources.length; i++) {
+                for (i = 0; i < sources.length; i += 1) {
                     if (sources[i].type === "application/dash+xml") {
                         return sources[i];
                     }
@@ -86,15 +90,15 @@
                 $(videoTag).on('progress', function (e) {
                     try {
                         var buffered = videoTag.buffered,
-                                buffer = buffered.end(0), // first loaded buffer
-                                ct = videoTag.currentTime,
-                                buffend = 0,
-                                i;
+                            buffer = buffered.end(0), // first loaded buffer
+                            ct = videoTag.currentTime,
+                            buffend = 0,
+                            i;
 
                         // buffered.end(null) will not always return the current buffer
                         // so we cycle through the time ranges to obtain it
                         if (ct) {
-                            for (i = 1; i < buffered.length; i++) {
+                            for (i = 1; i < buffered.length; i += 1) {
                                 buffend = buffered.end(i);
 
                                 if (buffend >= ct && buffered.start(i) <= ct) {
