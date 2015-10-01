@@ -47,6 +47,13 @@ The `dash` configuration object accepts the following parameters:
 Changing the configuration may have no or misleading effects. Not useful in production, only to a
 certain extent for debugging.
 
+CORS
+----
+
+The MPEG-DASH streams must be loaded from a server with a
+[cross domain policy](https://flowplayer.org/docs/setup.html#cross-domain) permitting `GET`
+requests.
+
 Demo
 ----
 
