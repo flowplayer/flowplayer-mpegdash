@@ -110,7 +110,7 @@
                     root.trigger('finish', [player]);
                     if (!player.conf.autoplay) {
                         // replay fix for Safari
-                        bean.one(videoTag, "seeked.dashreplay", function () {
+                        $(videoTag).one("seeked.dashreplay", function () {
                             if (!videoTag.currentTime) {
                                 videoTag.play();
                             }
@@ -171,7 +171,7 @@
                     if (fperr) {
                         errobj = {code: fperr};
                         if (fperr > 2) {
-                            errobj.video = extend(video, {
+                            errobj.video = $.extend(video, {
                                 src: video.src,
                                 url: e.event.url || video.src
                             });
