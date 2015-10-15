@@ -22,10 +22,8 @@
 
 (function () {
     "use strict";
-    var win = window,
-        engineName = "mpegdash",
-        support = flowplayer.support,
-        clientSupport = support.video && win.MediaSource,
+    var engineName = "mpegdash",
+        mse = window.MediaSource,
         extend = flowplayer.extend,
 
         engineImpl = function mpegdashEngine(player, root) {
@@ -51,10 +49,15 @@
                     },
 
                     load: function (video) {
-                        var livestartpos = 0;
+                        var init = !mediaPlayer,
+                            livestartpos = 0;
 
                         common.removeNode(common.findDirect("video", root)[0] || common.find(".fp-player > video", root)[0]);
-                        videoTag = common.createElement("video");
+                        videoTag = common.createElement("video", {
+                            className: "fp-engine hlsjs-engine",
+                            autoplay: player.conf.autoplay || !init
+                        });
+                        videoTag.setAttribute("x-webkit-airplay", "allow");
 
                         bean.on(videoTag, "play", function () {
                             player.trigger('resume', [player]);
@@ -93,7 +96,7 @@
                                 });
                             }
 
-                            if (player.conf.autoplay) {
+                            if (player.conf.autoplay || !init) {
                                 // let the fp API take care of autoplay
                                 // otherwise dash.js triggers play when seeking to
                                 // unbuffered positions
@@ -128,7 +131,7 @@
                         });
                         bean.on(videoTag, "ended", function () {
                             player.trigger('finish', [player]);
-                            if (support.browser.safari && !player.conf.autoplay) {
+                            if (flowplayer.support.browser.safari && !player.conf.autoplay) {
                                 bean.one(videoTag, "seeked.dashreplay", function () {
                                     if (!videoTag.currentTime) {
                                         videoTag.play();
@@ -140,9 +143,11 @@
                             player.trigger('volume', [player, videoTag.volume]);
                         });
 
-                        videoTag.className = 'fp-engine mpegdash-engine';
                         common.prepend(common.find(".fp-player", root)[0], videoTag);
 
+                        if (mediaPlayer) {
+                            mediaPlayer.reset();
+                        }
                         mediaPlayer = new MediaPlayer(context);
                         mediaPlayer.startup();
                         mediaPlayer.attachView(videoTag);
@@ -229,24 +234,22 @@
                     },
 
                     unload: function () {
-                        if (player.video.live && player.paused) {
-                            videoTag.play();
+                        if (mediaPlayer) {
+                            mediaPlayer.reset();
+                            mediaPlayer = 0;
+                            common.removeNode(videoTag);
+                            videoTag = 0;
                         }
-                        player.trigger('unload', [player]);
-                        mediaPlayer.reset();
                     }
                 };
 
             return engine;
         };
 
-    if (clientSupport) {
+    if (mse) {
         // only load engine if it can be used
         engineImpl.engineName = engineName; // must be exposed
         engineImpl.canPlay = function (type, conf) {
-            // inject dash conf at earliest opportunity
-            var dashconf = conf.dash;
-
             /*
               WARNING: MediaSource.isTypeSupported very inconsistent!
               e.g. Safari ignores codecs entirely, even bogus, like codecs="XYZ"
@@ -254,14 +257,14 @@
               example avc1 high level 4.1 + aac_lc: avc1.640029; mp4a.40.2
               default: avc1 baseline level 3.0 + aac_lc
             */
-            conf.dash = extend({
+            // inject dash conf at earliest opportunity
+            var dashconf = extend({
                 type: "video/mp4",
                 codecs: "avc1.42c01e, mp4a.40.2"
-            }, dashconf);
-            if (type === "application/dash+xml") {
-                return win.MediaSource.isTypeSupported(conf.dash.type + '; codecs="' + conf.dash.codecs + '"');
-            }
-            return false;
+            }, conf.dash, conf.clip.dash);
+
+            return type === "application/dash+xml" &&
+                    mse.isTypeSupported(dashconf.type + '; codecs="' + dashconf.codecs + '"');
         };
 
         // put on top of engine stack
