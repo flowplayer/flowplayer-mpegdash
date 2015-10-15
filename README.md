@@ -74,7 +74,7 @@ Stream compatibility
 
 MPEG-DASH is not a fixed standard yet, but a moving target. As the plugin is based on dash.js stream
 compatibility can be cross-checked in the latest
-[dash.js sample player](http://dashif.org/reference/players/javascript/v1.5.0/samples/dash-if-reference-player/).
+[dash.js sample player](http://dashif.org/reference/players/javascript/v1.5.1/samples/dash-if-reference-player/).
 
 ### GPAC
 
@@ -101,7 +101,7 @@ load the components separately using the latest development build or release fro
 <script src="//releases.flowplayer.org/6.0.3/flowplayer.min.js"></script>
 
 <!-- load dash.js latest release -->
-<!-- <script src="//cdn.dashjs.org/v1.5.0/dash.all.js"></script> -->
+<!-- <script src="//cdn.dashjs.org/v1.5.1/dash.all.js"></script> -->
 
 <!-- or load dash.js latest dev build -->
 <script src="//cdn.dashjs.org/latest/dash.all.js"></script>
