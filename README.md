@@ -141,6 +141,9 @@ Known issues
 ------------
 
 - encrypted streams not yet supported
+- Android: Until
+  [this bug fix](https://chromium.googlesource.com/chromium/src.git/+/0b5ec458acf03e3507a3737cfc483df0694cf803%5E!/)
+  has propagated onto devices, streams with High profile AAC audio (`mp4a.40.5`) will not play.
 - `MediaSource` video type and codecs feature detection via JavaScript is broken in many clients in
   a similar fashion as for
   [SOURCE/VIDEO tag type attributes](http://demos.flowplayer.org/videotest/canplay.html).
