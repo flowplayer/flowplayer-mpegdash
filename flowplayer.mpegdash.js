@@ -199,7 +199,8 @@
                         mediaPlayer.attachView(videoTag);
                         mediaPlayer.attachSource(video.src);
 
-                        if (videoTag.paused && (video.autoplay || conf.autoplay)) {
+                        // additional paused check would make this unreliable
+                        if (video.autoplay || conf.autoplay) {
                             videoTag.play();
                         }
                     },
