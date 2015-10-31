@@ -17,6 +17,7 @@
    requires:
    - Flowplayer HTML5 version 6.x or greater
    - dash.js https://github.com/Dash-Industry-Forum/dash.js
+   revision: $GIT_ID$
 
 */
 
@@ -26,6 +27,10 @@
         mse = window.MediaSource,
         common = flowplayer.common,
         extend = flowplayer.extend,
+
+        isDashType = function (typ) {
+            return typ.toLowerCase() === "application/dash+xml";
+        },
 
         engineImpl = function mpegdashEngine(player, root) {
             var bean = flowplayer.bean,
@@ -42,7 +47,8 @@
 
                         for (i = 0; i < sources.length; i += 1) {
                             source = sources[i];
-                            if (source.type.toLowerCase() === "application/dash+xml" && (!source.engine || source.engine === engineName)) {
+                            if (isDashType(source.type)
+                                    && (!source.engine || source.engine === engineName)) {
                                 return source;
                             }
                         }
@@ -54,20 +60,20 @@
                             livestartpos = 0;
 
                         if (init) {
-                            common.removeNode(common.findDirect("video", root)[0] || common.find(".fp-player > video", root)[0]);
+                            common.removeNode(common.findDirect("video", root)[0]
+                                    || common.find(".fp-player > video", root)[0]);
                             videoTag = common.createElement("video", {
                                 className: "fp-engine " + engineName + "-engine",
                                 autoplay: conf.autoplay
                                     ? "autoplay"
                                     : false
                             });
+                            videoTag.setAttribute("x-webkit-airplay", "allow");
 
                             context = new Dash.di.DashContext();
                         } else {
                             mediaPlayer.reset();
                         }
-
-                        videoTag.setAttribute("x-webkit-airplay", "allow");
 
                         bean.on(videoTag, "play", function () {
                             player.trigger('resume', [player]);
@@ -260,7 +266,7 @@
                 codecs: "avc1.42c01e, mp4a.40.2"
             }, conf.dash, conf.clip.dash);
 
-            return type === "application/dash+xml" &&
+            return isDashType(type) &&
                     mse.isTypeSupported(dashconf.type + '; codecs="' + dashconf.codecs + '"');
         };
 
@@ -274,7 +280,7 @@
             // detect poster condition as in core on boot
             var bc = common.css(root, 'backgroundColor'),
                 has_bg = common.css(root, 'backgroundImage') !== "none" ||
-                        (bc && bc !== "rgba(0, 0, 0, 0)" && bc !== "transparent"),
+                        (bc && bc !== "rgba(0,0,0,0)" && bc !== "transparent"),
                 posterCondition = has_bg && !api.conf.splash && !api.conf.autoplay,
 
                 posterHack = function (e) {

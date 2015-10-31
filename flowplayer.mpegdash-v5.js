@@ -17,6 +17,7 @@
    requires:
    - Flowplayer HTML5 version 5.x
    - dash.js https://github.com/Dash-Industry-Forum/dash.js
+   revision: $GIT_ID$
 
 */
 
@@ -36,7 +37,7 @@
                 var i;
 
                 for (i = 0; i < sources.length; i += 1) {
-                    if (sources[i].type === "application/dash+xml") {
+                    if (sources[i].type.toLowerCase() === "application/dash+xml") {
                         return sources[i];
                     }
                 }
