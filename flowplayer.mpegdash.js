@@ -56,24 +56,23 @@
 
                     load: function (video) {
                         var conf = player.conf,
-                            init = !context,
                             livestartpos = 0;
 
-                        if (init) {
-                            common.removeNode(common.findDirect("video", root)[0]
-                                    || common.find(".fp-player > video", root)[0]);
-                            videoTag = common.createElement("video", {
-                                className: "fp-engine " + engineName + "-engine",
-                                autoplay: conf.autoplay
-                                    ? "autoplay"
-                                    : false
-                            });
-                            videoTag.setAttribute("x-webkit-airplay", "allow");
-
-                            context = new Dash.di.DashContext();
-                        } else {
+                        if (mediaPlayer) {
                             mediaPlayer.reset();
+                        } else if (!context) {
+                            context = new Dash.di.DashContext();
                         }
+
+                        common.removeNode(common.findDirect("video", root)[0]
+                                || common.find(".fp-player > video", root)[0]);
+                        videoTag = common.createElement("video", {
+                            className: "fp-engine " + engineName + "-engine",
+                            autoplay: conf.autoplay
+                                ? "autoplay"
+                                : false
+                        });
+                        videoTag.setAttribute("x-webkit-airplay", "allow");
 
                         bean.on(videoTag, "play", function () {
                             player.trigger('resume', [player]);
@@ -198,15 +197,12 @@
                             }
                         }, false);
 
-                        if (init) {
-                            common.prepend(common.find(".fp-player", root)[0], videoTag);
-                        }
+                        common.prepend(common.find(".fp-player", root)[0], videoTag);
 
                         mediaPlayer.attachView(videoTag);
                         mediaPlayer.attachSource(video.src);
 
-                        // additional paused check would make this unreliable
-                        if (video.autoplay || conf.autoplay) {
+                        if (videoTag.paused && (video.autoplay || conf.autoplay)) {
                             videoTag.play();
                         }
                     },
@@ -235,7 +231,7 @@
                     },
 
                     unload: function () {
-                        if (context) {
+                        if (mediaPlayer) {
                             mediaPlayer.reset();
                             mediaPlayer = 0;
                             context = 0;
@@ -284,35 +280,23 @@
                 posterCondition = has_bg && !api.conf.splash && !api.conf.autoplay,
 
                 posterHack = function (e) {
-                    //if (api.engine.engineName === engineName) {
-                    // omitting this condition which would confine the hack to
-                    // the hlsjs engine works around
-                    // https://github.com/flowplayer/flowplayer/issues/942
+                    // assert that poster is set regardless of client of
+                    // video loading delay
+                    setTimeout(function () {
+                        var posterClass = "is-poster";
 
-                    api.off("seek." + engineName);
-
-                    if (e.type !== "ready") {
-                        // assert that poster is set regardless of client of
-                        // video loading delay
-                        setTimeout(function () {
-                            var posterClass = "is-poster";
-
-                            common.addClass(root, posterClass);
-                            api.one("resume." + engineName, function () {
-                                common.removeClass(root, posterClass);
-                            });
-                        }, 0);
-                    }
+                        common.addClass(root, posterClass);
+                        api.one("resume." + engineName, function () {
+                            api.off("ready." + engineName);
+                            api.off("seek." + engineName);
+                            common.removeClass(root, posterClass);
+                        });
+                    }, 0);
                 };
 
             if (posterCondition) {
-                // setup once at first load
-                api.one("load." + engineName, function (e, api) {
-                    // one("seek") is not reliable as it's caught only
-                    // with playlists, so will be off'd in posterHack
-                    api.on("seek." + engineName + " stop." + engineName, posterHack)
-                        .one("ready." + engineName, posterHack);
-                });
+                api.on("ready." + engineName + " stop." + engineName + " seek." + engineName,
+                        posterHack);
             }
         });
     }
