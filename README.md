@@ -1,8 +1,8 @@
 Flowplayer MPEG-DASH plugin
 ===========================
 
-This plugin provides the `mpegdash` [engine](https://flowplayer.org/docs/api.html#engines) for
-playback of [MPEG-DASH](https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP) streams.
+This plugin provides the `dash` [engine](https://flowplayer.org/docs/api.html#engines) for
+playback of [DASH](https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP) streams.
 
 Usage
 -----
@@ -50,7 +50,7 @@ certain extent for debugging.
 CORS
 ----
 
-The MPEG-DASH streams must be loaded from a server with a
+The DASH streams must be loaded from a server with a
 [cross domain policy](https://flowplayer.org/docs/setup.html#cross-domain) permitting `GET`
 requests.
 
@@ -66,15 +66,19 @@ Features
   https://github.com/Dash-Industry-Forum/dash.js/commit/4af1b6203f20 - of
   [dash.js](https://github.com/Dash-Industry-Forum/dash.js) by the
   [Dash Industry Forum](http://dashif.org/software/)
-- engine is only loaded if the client supports MPEG-DASH
+- engine is only loaded if the client supports MPEG-DASH, see also the `codecs`
+  [option](#plugin-configuration)
 - also available for Flowplayer version 5.x ([demo](http://demos.flowplayer.org/v5/api/dash.html))
 
 Stream compatibility
 --------------------
 
-MPEG-DASH is not a fixed standard yet, but a moving target. As the plugin is based on dash.js stream
+DASH is not a fixed standard yet, but a moving target. As the plugin is based on dash.js stream
 compatibility can be cross-checked in the latest
 [dash.js sample player](http://dashif.org/reference/players/javascript/v1.5.1/samples/dash-if-reference-player/).
+
+*Caveat:* WebM-DASH streams are extremely unlikely to work correctly with dash.js - or any other
+available client library we know about. Hence the name of the plugin.
 
 ### GPAC
 

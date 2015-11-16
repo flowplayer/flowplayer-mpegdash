@@ -23,7 +23,7 @@
 
 (function () {
     "use strict";
-    var engineName = "mpegdash",
+    var engineName = "dash",
         mse = window.MediaSource,
         common = flowplayer.common,
         extend = flowplayer.extend,
@@ -260,7 +260,7 @@
             var dashconf = extend({
                 type: "video/mp4",
                 codecs: "avc1.42c01e, mp4a.40.2"
-            }, flowplayer.conf.dash, conf.dash, conf.clip.dash);
+            }, flowplayer.conf[engineName], conf[engineName], conf.clip[engineName]);
 
             return isDashType(type) &&
                     mse.isTypeSupported(dashconf.type + '; codecs="' + dashconf.codecs + '"');
