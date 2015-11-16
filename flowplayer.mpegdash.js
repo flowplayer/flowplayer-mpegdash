@@ -260,7 +260,7 @@
             var dashconf = extend({
                 type: "video/mp4",
                 codecs: "avc1.42c01e, mp4a.40.2"
-            }, conf.dash, conf.clip.dash);
+            }, flowplayer.conf.dash, conf.dash, conf.clip.dash);
 
             return isDashType(type) &&
                     mse.isTypeSupported(dashconf.type + '; codecs="' + dashconf.codecs + '"');
