@@ -278,13 +278,12 @@
                 has_bg = common.css(root, 'backgroundImage') !== "none" ||
                         (bc && bc !== "rgba(0,0,0,0)" && bc !== "transparent"),
                 posterCondition = has_bg && !api.conf.splash && !api.conf.autoplay,
+                posterClass = "is-poster",
 
-                posterHack = function (e) {
+                posterHack = function () {
                     // assert that poster is set regardless of client of
                     // video loading delay
                     setTimeout(function () {
-                        var posterClass = "is-poster";
-
                         common.addClass(root, posterClass);
                         api.one("resume." + engineName, function () {
                             api.off("ready." + engineName);
@@ -296,7 +295,11 @@
 
             if (posterCondition) {
                 api.on("ready." + engineName + " stop." + engineName + " seek." + engineName,
-                        posterHack);
+                        posterHack)
+                    .on("load." + engineName, function () {
+                        // required for subsequent loads in Safari
+                        common.removeClass(root, posterClass);
+                    });
             }
         });
     }
