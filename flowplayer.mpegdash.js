@@ -27,6 +27,7 @@
         mse = window.MediaSource,
         common = flowplayer.common,
         extend = flowplayer.extend,
+        version = flowplayer.version,
 
         isDashType = function (typ) {
             return typ.toLowerCase() === "application/dash+xml";
@@ -37,6 +38,36 @@
                 mediaPlayer,
                 videoTag,
                 context,
+
+                pre604 = /^6\.0\.[0-3]$/.test(version),
+                bc = common.css(root, 'backgroundColor'),
+                // spaces in rgba arg mandatory for recognition
+                has_bg = common.css(root, 'backgroundImage') !== "none" ||
+                        (bc && bc !== "rgba(0, 0, 0, 0)" && bc !== "transparent"),
+                posterCondition = has_bg && !player.conf.splash
+                        && (!pre604 || (pre604 && !player.conf.autoplay)),
+                posterClass = "is-poster",
+
+                posterHack = function (e) {
+                    // assert that poster is set regardless of client of
+                    // video loading delay
+                    setTimeout(function () {
+                        if (!player.conf.autoplay || e.type === "stop") {
+                            common.addClass(root, posterClass);
+                            if (!pre604) {
+                                // must set this ourselves
+                                player.poster = true;
+                            }
+                            player.one("resume." + engineName, function () {
+                                common.removeClass(root, posterClass);
+                                player.off("seek." + engineName);
+                                if (player.poster) {
+                                    player.poster = false;
+                                }
+                            });
+                        }
+                    }, 0);
+                },
 
                 engine = {
                     engineName: engineName,
@@ -245,10 +276,19 @@
                     }
                 };
 
+
+            if (posterCondition) {
+                player.on("ready." + engineName + " stop." + engineName + " seek." + engineName,
+                        posterHack)
+                    .on("load." + engineName, function () {
+                        // required for subsequent loads in Safari
+                        common.removeClass(root, posterClass);
+                    });
+            }
             return engine;
         };
 
-    if (mse) {
+    if (mse && version.indexOf("5.") !== 0) {
         // only load engine if it can be used
         engineImpl.engineName = engineName; // must be exposed
         engineImpl.canPlay = function (type, conf) {
@@ -273,38 +313,6 @@
         // so mpegedash is tested before html5
         flowplayer.engines.unshift(engineImpl);
 
-
-        // poster hack
-        flowplayer(function (api, root) {
-            // detect poster condition as in core on boot
-            var bc = common.css(root, 'backgroundColor'),
-                has_bg = common.css(root, 'backgroundImage') !== "none" ||
-                        (bc && bc !== "rgba(0,0,0,0)" && bc !== "transparent"),
-                posterCondition = has_bg && !api.conf.splash && !api.conf.autoplay,
-                posterClass = "is-poster",
-
-                posterHack = function () {
-                    // assert that poster is set regardless of client of
-                    // video loading delay
-                    setTimeout(function () {
-                        common.addClass(root, posterClass);
-                        api.one("resume." + engineName, function () {
-                            api.off("ready." + engineName);
-                            api.off("seek." + engineName);
-                            common.removeClass(root, posterClass);
-                        });
-                    }, 0);
-                };
-
-            if (posterCondition) {
-                api.on("ready." + engineName + " stop." + engineName + " seek." + engineName,
-                        posterHack)
-                    .on("load." + engineName, function () {
-                        // required for subsequent loads in Safari
-                        common.removeClass(root, posterClass);
-                    });
-            }
-        });
     }
 
 }());
