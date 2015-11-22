@@ -1,4 +1,4 @@
-Flowplayer MPEG-DASH plugin
+Flowplayer dashjs plugin
 ===========================
 
 This plugin provides the `dash` [engine](https://flowplayer.org/docs/api.html#engines) for
@@ -11,7 +11,7 @@ Load the latest plugin after the Flowplayer script:
 
 ```html
 <script src="//releases.flowplayer.org/6.0.3/flowplayer.min.js"></script>
-<script src="//releases.flowplayer.org/mpegdash/flowplayer.mpegdash.min.js"></script>
+<script src="//releases.flowplayer.org/dashjs/flowplayer.dashjs.min.js"></script>
 ```
 
 Sources configuration:
@@ -78,7 +78,7 @@ compatibility can be cross-checked in the latest
 [dash.js sample player](http://dashif.org/reference/players/javascript/v1.5.1/samples/dash-if-reference-player/).
 
 *Caveat:* WebM-DASH streams are extremely unlikely to work correctly with dash.js - or any other
-available client library we know about. Hence the name of the plugin.
+available client library we know about. - Hence historically the name of the plugin Git repository.
 
 ### GPAC
 
@@ -111,7 +111,7 @@ load the components separately using the latest development build or release fro
 <script src="//cdn.dashjs.org/latest/dash.all.js"></script>
 
 <!-- load latest plugin standalone -->
-<script src="//releases.flowplayer.org/mpegdash/flowplayer.mpegdash.js"></script>
+<script src="//releases.flowplayer.org/dashjs/flowplayer.dashjs.js"></script>
 ```
 
 Conversely, to find out whether there's a problem with the actual plugin component can be tested by
@@ -122,7 +122,7 @@ exclusion with a simple page using bare dash.js, like:
 <html>
 <head>
 
-<script src="//releases.flowplayer.org/mpegdash/dash.all.js"></script>
+<script src="//releases.flowplayer.org/dashjs/dash.all.js"></script>
 
 <script>
 window.onload = function () {
