@@ -10,7 +10,7 @@ Usage
 Load the latest plugin after the Flowplayer script:
 
 ```html
-<script src="//releases.flowplayer.org/6.0.3/flowplayer.min.js"></script>
+<script src="//releases.flowplayer.org/6.0.4/flowplayer.min.js"></script>
 <script src="//releases.flowplayer.org/dashjs/flowplayer.dashjs.min.js"></script>
 ```
 
@@ -102,7 +102,7 @@ A quick way to find out whether the currently packed version of dash.js is causi
 load the components separately using the latest development build or release from the dash.js CDN:
 
 ```html
-<script src="//releases.flowplayer.org/6.0.3/flowplayer.min.js"></script>
+<script src="//releases.flowplayer.org/6.0.4/flowplayer.min.js"></script>
 
 <!-- load dash.js latest release -->
 <!-- <script src="//cdn.dashjs.org/v1.5.1/dash.all.js"></script> -->
