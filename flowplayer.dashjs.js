@@ -27,7 +27,6 @@
         mse = window.MediaSource,
         common = flowplayer.common,
         extend = flowplayer.extend,
-        version = flowplayer.version,
 
         isDashType = function (typ) {
             return typ.toLowerCase() === "application/dash+xml";
@@ -254,7 +253,7 @@
             return engine;
         };
 
-    if (mse && version.indexOf("5.") !== 0) {
+    if (mse && flowplayer.version.indexOf("5.") !== 0) {
         // only load engine if it can be used
         engineImpl.engineName = engineName; // must be exposed
         engineImpl.canPlay = function (type, conf) {
