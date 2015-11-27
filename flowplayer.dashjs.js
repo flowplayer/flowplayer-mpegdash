@@ -39,36 +39,6 @@
                 videoTag,
                 context,
 
-                pre604 = /^6\.0\.[0-3]$/.test(version),
-                bc = common.css(root, 'backgroundColor'),
-                // spaces in rgba arg mandatory for recognition
-                has_bg = common.css(root, 'backgroundImage') !== "none" ||
-                        (bc && bc !== "rgba(0, 0, 0, 0)" && bc !== "transparent"),
-                posterCondition = has_bg && !player.conf.splash
-                        && (!pre604 || (pre604 && !player.conf.autoplay)),
-                posterClass = "is-poster",
-
-                posterHack = function (e) {
-                    // assert that poster is set regardless of client of
-                    // video loading delay
-                    setTimeout(function () {
-                        if (!player.conf.autoplay || e.type === "stop") {
-                            common.addClass(root, posterClass);
-                            if (!pre604) {
-                                // must set this ourselves
-                                player.poster = true;
-                            }
-                            player.one("resume." + engineName, function () {
-                                common.removeClass(root, posterClass);
-                                player.off("seek." + engineName);
-                                if (player.poster) {
-                                    player.poster = false;
-                                }
-                            });
-                        }
-                    }, 0);
-                },
-
                 engine = {
                     engineName: engineName,
 
@@ -89,24 +59,25 @@
                     },
 
                     load: function (video) {
-                        var conf = player.conf,
+                        var init = !context,
+                            conf = player.conf,
                             livestartpos = 0;
 
-                        if (mediaPlayer) {
-                            mediaPlayer.reset();
-                        } else if (!context) {
+                        if (init) {
                             context = new Dash.di.DashContext();
-                        }
 
-                        common.removeNode(common.findDirect("video", root)[0]
-                                || common.find(".fp-player > video", root)[0]);
-                        videoTag = common.createElement("video", {
-                            className: "fp-engine " + engineName + "-engine",
-                            autoplay: conf.autoplay
-                                ? "autoplay"
-                                : false
-                        });
-                        videoTag.setAttribute("x-webkit-airplay", "allow");
+                            common.removeNode(common.findDirect("video", root)[0]
+                                    || common.find(".fp-player > video", root)[0]);
+                            videoTag = common.createElement("video", {
+                                className: "fp-engine " + engineName + "-engine",
+                                autoplay: conf.autoplay
+                                    ? "autoplay"
+                                    : false
+                            });
+                            videoTag.setAttribute("x-webkit-airplay", "allow");
+                        } else {
+                            mediaPlayer.reset();
+                        }
 
                         bean.on(videoTag, "play", function () {
                             player.trigger('resume', [player]);
@@ -231,13 +202,17 @@
                             }
                         }, false);
 
-                        common.prepend(common.find(".fp-player", root)[0], videoTag);
+                        if (init) {
+                            common.prepend(common.find(".fp-player", root)[0], videoTag);
+                        }
 
                         mediaPlayer.attachView(videoTag);
                         mediaPlayer.attachSource(video.src);
 
                         if (videoTag.paused && (video.autoplay || conf.autoplay)) {
-                            videoTag.play();
+                            bean.on(videoTag, "loadeddata." + engineName, function () {
+                                videoTag.play();
+                            });
                         }
                     },
 
@@ -276,15 +251,6 @@
                     }
                 };
 
-
-            if (posterCondition) {
-                player.on("ready." + engineName + " stop." + engineName + " seek." + engineName,
-                        posterHack)
-                    .on("load." + engineName, function () {
-                        // required for subsequent loads in Safari
-                        common.removeClass(root, posterClass);
-                    });
-            }
             return engine;
         };
 
