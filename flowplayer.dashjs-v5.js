@@ -12,7 +12,7 @@
 
    Includes dash.all.js:
    Copyright (c) 2015, Dash Industry Forum. **All rights reserved.
-   https://github.com/Dash-Industry-Forum/dash.js/blob/development/LICENSE.md
+   https://github.com/Dash-Industry-Forum/dash.js/blob/master/LICENSE.md
 
    requires:
    - Flowplayer HTML5 version 5.x
