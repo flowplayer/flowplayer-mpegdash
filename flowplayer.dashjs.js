@@ -182,12 +182,8 @@
                                 case "MEDIA_ERR_ABORTED":
                                     fperr = 1;
                                     break;
-                                default:
-                                    fperr = 0;
                                 }
                                 break;
-                            default:
-                                fperr = 0;
                             }
                             if (fperr) {
                                 errobj = {code: fperr};
