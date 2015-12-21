@@ -63,7 +63,7 @@ Features
 --------
 
 - packs a compatibility tested version - current:
-  [RC1_v.1.5.2](https://github.com/Dash-Industry-Forum/dash.js/commits/RC1_v.1.5.2) - of
+  [v1.6.0](https://github.com/Dash-Industry-Forum/dash.js/releases/tag/v1.6.0) - of
   [dash.js](https://github.com/Dash-Industry-Forum/dash.js) by the
   [Dash Industry Forum](http://dashif.org/software/)
 - engine is only loaded if the client supports MPEG-DASH, see also the `codecs`
