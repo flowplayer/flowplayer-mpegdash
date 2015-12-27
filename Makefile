@@ -27,9 +27,10 @@ debug:
 all: default v5
 
 dist: clean all debug
+	@ cp LICENSE.md $(DIST)/
 
 zip: clean dist
-	@ cd $(DIST) && zip flowplayer.dashjs.zip *.js
+	@ cd $(DIST) && zip flowplayer.dashjs.zip *.js LICENSE.md
 
 clean:
 	@ rm -rf $(DIST)
