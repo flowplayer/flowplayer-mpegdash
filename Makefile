@@ -7,7 +7,7 @@ GIT_ID=${shell git rev-parse --short HEAD }
 default:
 	@ mkdir -p $(DIST)
 	@ sed -ne 's/\$$GIT_ID\$$/$(GIT_ID)/; /^\/\*!/,/^\*\// p' flowplayer.dashjs.js > $(JS).min.js
-	@ cat dash.all.js >> $(JS).min.js
+	@ cat dash.mediaplayer.min.js >> $(JS).min.js
 	@ echo '' >> $(JS).min.js
 	@ sed -e '/"use strict";/ d' flowplayer.dashjs.js | uglifyjs --mangle -c >> $(JS).min.js
 
@@ -20,7 +20,7 @@ v5:
 
 debug:
 	@ mkdir -p $(DIST)
-	@ cp dash.all.js $(DIST)/
+	@ cp dash.all.js $(DIST)/dash.all.js
 	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' flowplayer.dashjs.js > $(JS).js
 	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' flowplayer.dashjs-v5.js > $(JS)-v5.js
 

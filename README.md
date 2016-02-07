@@ -63,15 +63,19 @@ Features
 --------
 
 - packs a compatibility tested version - current:
-  [v1.6.0](https://github.com/Dash-Industry-Forum/dash.js/releases/tag/v1.6.0) - of
+  https://github.com/Dash-Industry-Forum/dash.js/commit/7658318ea2957521b2d1f0e590eaa5bcd8b69d05 - of
   [dash.js](https://github.com/Dash-Industry-Forum/dash.js) by the
   [Dash Industry Forum](http://dashif.org/software/)
 - engine is only loaded if the client supports MPEG-DASH, see also the `codecs`
   [option](#plugin-configuration)
-- also available for Flowplayer version 5.x ([demo](http://demos.flowplayer.org/v5/api/dash.html))
+- also available for Flowplayer version 5.x ([demo](http://demos.flowplayer.org/v5/api/dash.html)) -
+  not developed anymore, uses
+  [v1.6.0](https://github.com/Dash-Industry-Forum/dash.js/releases/tag/v1.6.0) of dash.js
 
 Stream compatibility
 --------------------
+
+*Note:* dash.js v2 is currently in development, no sample player available.
 
 DASH is not a fixed standard yet, but a moving target. As the plugin is based on dash.js stream
 compatibility can be cross-checked in the latest
@@ -97,6 +101,9 @@ toolchain.
 
 Debugging
 ---------
+
+*Note:* This section does currently not apply as dash.js v2 assets are not yet available from their
+CDN!
 
 A quick way to find out whether the currently packed version of dash.js is causing a problem is to
 load the components separately using the latest development build or release from the dash.js CDN:

@@ -1,5 +1,5 @@
 /*jslint browser: true, for: true */
-/*global Dash, flowplayer, MediaPlayer, window */
+/*global dashjs, flowplayer, MediaPlayer, window */
 
 /*!
 
@@ -36,7 +36,6 @@
             var bean = flowplayer.bean,
                 mediaPlayer,
                 videoTag,
-                context,
 
                 engine = {
                     engineName: engineName,
@@ -58,13 +57,11 @@
                     },
 
                     load: function (video) {
-                        var init = !context,
+                        var init = !mediaPlayer,
                             conf = player.conf,
                             livestartpos = 0;
 
                         if (init) {
-                            context = new Dash.di.DashContext();
-
                             common.removeNode(common.findDirect("video", root)[0]
                                     || common.find(".fp-player > video", root)[0]);
                             videoTag = common.createElement("video", {
@@ -146,63 +143,65 @@
                             player.trigger('volume', [player, videoTag.volume]);
                         });
 
-                        mediaPlayer = new MediaPlayer(context);
-                        mediaPlayer.startup();
+                        if (init) {
+                            mediaPlayer = dashjs.MediaPlayer().create();
 
-                        // caching can cause failures in playlists
-                        // for the moment disable entirely
-                        mediaPlayer.enableLastBitrateCaching(false);
-                        // handled by fp API
-                        mediaPlayer.setAutoPlay(false);
-                        // for seeking in paused state
-                        mediaPlayer.setScheduleWhilePaused(true);
+                            // caching can cause failures in playlists
+                            // for the moment disable entirely
+                            mediaPlayer.enableLastBitrateCaching(false);
+                            // handled by fp API
+                            mediaPlayer.setAutoPlay(false);
+                            // for seeking in paused state
+                            mediaPlayer.setScheduleWhilePaused(true);
 
-                        mediaPlayer.addEventListener("error", function (e) {
-                            var fperr,
-                                errobj;
+                            mediaPlayer.on("error", function (e) {
+                                var fperr,
+                                    errobj;
 
-                            switch (e.error) {
-                            case "download":
-                                fperr = 4;
-                                break;
-                            case "manifestError":
-                                fperr = 5;
-                                break;
-                            case "mediasource":
-                                switch (e.event) {
-                                case "MEDIA_ERR_DECODE":
-                                    fperr = 3;
+                                switch (e.error) {
+                                case "download":
+                                    fperr = 4;
                                     break;
-                                case "MEDIA_ERR_SRC_NOT_SUPPORTED":
+                                case "manifestError":
                                     fperr = 5;
                                     break;
-                                case "MEDIA_ERR_NETWORK":
-                                    fperr = 2;
-                                    break;
-                                case "MEDIA_ERR_ABORTED":
-                                    fperr = 1;
+                                case "mediasource":
+                                    switch (e.event) {
+                                    case "MEDIA_ERR_DECODE":
+                                        fperr = 3;
+                                        break;
+                                    case "MEDIA_ERR_SRC_NOT_SUPPORTED":
+                                        fperr = 5;
+                                        break;
+                                    case "MEDIA_ERR_NETWORK":
+                                        fperr = 2;
+                                        break;
+                                    case "MEDIA_ERR_ABORTED":
+                                        fperr = 1;
+                                        break;
+                                    }
                                     break;
                                 }
-                                break;
-                            }
-                            if (fperr) {
-                                errobj = {code: fperr};
-                                if (fperr > 2) {
-                                    errobj.video = extend(video, {
-                                        src: video.src,
-                                        url: e.event.url || video.src
-                                    });
+                                if (fperr) {
+                                    errobj = {code: fperr};
+                                    if (fperr > 2) {
+                                        errobj.video = extend(video, {
+                                            src: video.src,
+                                            url: e.event.url || video.src
+                                        });
+                                    }
+                                    player.trigger('error', [player, errobj]);
                                 }
-                                player.trigger('error', [player, errobj]);
-                            }
-                        }, false);
+                            }, false);
 
-                        if (init) {
                             common.prepend(common.find(".fp-player", root)[0], videoTag);
-                        }
+                            mediaPlayer.initialize(videoTag, video.src, false);
 
-                        mediaPlayer.attachView(videoTag);
-                        mediaPlayer.attachSource(video.src);
+                        } else {
+                            mediaPlayer.attachView(videoTag);
+                            mediaPlayer.attachSource(video.src);
+
+                        }
 
                         if (videoTag.paused && (video.autoplay || conf.autoplay)) {
                             bean.on(videoTag, "loadeddata." + engineName, function () {
@@ -238,7 +237,6 @@
                         if (mediaPlayer) {
                             mediaPlayer.reset();
                             mediaPlayer = 0;
-                            context = 0;
                             bean.off(videoTag);
                             common.removeNode(videoTag);
                             videoTag = 0;
