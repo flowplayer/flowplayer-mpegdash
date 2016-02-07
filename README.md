@@ -10,7 +10,7 @@ Usage
 Load the latest plugin after the Flowplayer script:
 
 ```html
-<script src="//releases.flowplayer.org/6.0.4/flowplayer.min.js"></script>
+<script src="//releases.flowplayer.org/6.0.5/flowplayer.min.js"></script>
 <script src="//releases.flowplayer.org/dashjs/flowplayer.dashjs.min.js"></script>
 ```
 
@@ -75,7 +75,7 @@ Stream compatibility
 
 DASH is not a fixed standard yet, but a moving target. As the plugin is based on dash.js stream
 compatibility can be cross-checked in the latest
-[dash.js sample player](http://dashif.org/reference/players/javascript/v1.5.1/samples/dash-if-reference-player/).
+[dash.js sample player](http://dashif.org/reference/players/javascript/v1.6.0/samples/dash-if-reference-player/).
 
 *Caveat:* WebM-DASH streams are extremely unlikely to work correctly with dash.js - or any other
 available client library we know about. - Hence historically the name of the plugin Git repository.
@@ -102,10 +102,10 @@ A quick way to find out whether the currently packed version of dash.js is causi
 load the components separately using the latest development build or release from the dash.js CDN:
 
 ```html
-<script src="//releases.flowplayer.org/6.0.4/flowplayer.min.js"></script>
+<script src="//releases.flowplayer.org/6.0.5/flowplayer.min.js"></script>
 
 <!-- load dash.js latest release -->
-<!-- <script src="//cdn.dashjs.org/v1.5.1/dash.all.js"></script> -->
+<!-- <script src="//cdn.dashjs.org/v1.6.0/dash.all.js"></script> -->
 
 <!-- or load dash.js latest dev build -->
 <script src="//cdn.dashjs.org/latest/dash.all.js"></script>
@@ -147,7 +147,7 @@ Known issues
 - encrypted streams not yet supported
 - Android: Until
   [this bug fix](https://chromium.googlesource.com/chromium/src.git/+/0b5ec458acf03e3507a3737cfc483df0694cf803%5E!/)
-  has propagated onto devices, streams with High profile AAC audio (`mp4a.40.5`) will not play.
+  has propagated onto devices, streams with High profile AAC audio (`mp4a.40.5`) may not play.
 - `MediaSource` video type and codecs feature detection via JavaScript is broken in many clients in
   a similar fashion as for
   [SOURCE/VIDEO tag type attributes](http://demos.flowplayer.org/videotest/canplay.html).
