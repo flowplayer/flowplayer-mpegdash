@@ -146,6 +146,8 @@
                         if (init) {
                             mediaPlayer = dashjs.MediaPlayer().create();
 
+                            // new ABR algo
+                            mediaPlayer.enableBufferOccupancyABR(false);
                             // caching can cause failures in playlists
                             // for the moment disable entirely
                             mediaPlayer.enableLastBitrateCaching(false);
