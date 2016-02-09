@@ -27,6 +27,7 @@
         mse = window.MediaSource,
         common = flowplayer.common,
         extend = flowplayer.extend,
+        dashconf,
 
         isDashType = function (typ) {
             return typ.toLowerCase() === "application/dash+xml";
@@ -89,7 +90,7 @@
                         bean.on(videoTag, "timeupdate", function () {
                             player.trigger('progress', [player, videoTag.currentTime - livestartpos]);
                         });
-                        bean.on(videoTag, "loadeddata", function () {
+                        bean.on(videoTag, "loadedmetadata", function () {
                             extend(video, {
                                 duration: videoTag.duration,
                                 seekable: videoTag.seekable.end(null),
@@ -147,7 +148,7 @@
                             mediaPlayer = dashjs.MediaPlayer().create();
 
                             // new ABR algo
-                            mediaPlayer.enableBufferOccupancyABR(true);
+                            mediaPlayer.enableBufferOccupancyABR(!!dashconf.bufferOccupancyABR);
                             // caching can cause failures in playlists
                             // for the moment disable entirely
                             mediaPlayer.enableLastBitrateCaching(false);
@@ -261,7 +262,7 @@
               default: avc1 baseline level 3.0 + aac_lc
             */
             // inject dash conf at earliest opportunity
-            var dashconf = extend({
+            dashconf = extend({
                 type: "video/mp4",
                 codecs: "avc1.42c01e, mp4a.40.2"
             }, flowplayer.conf[engineName], conf[engineName], conf.clip[engineName]);

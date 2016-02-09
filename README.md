@@ -32,6 +32,11 @@ Plugin configuration
 
 The plugin provides the following [player option](https://flowplayer.org/docs/setup.html#player-options):
 
+The plugin provides the `dash` option on the
+[global](https://flowplayer.org/docs/setup.html#global-configuration)
+[player](https://flowplayer.org/docs/setup.html#player-options) and
+[clip](https://flowplayer.org/docs/setup.html#player-options) levels.
+
 | option | type | description | html configurable |
 | :----- | :--- | :---------- | :---------------- |
 | `dash` | `object` | Signals the browser which playback capabilites are expected of its `MediaSource` implementation. | no |
@@ -40,6 +45,7 @@ The `dash` configuration object accepts the following parameters:
 
 | option | default value | description |
 | :----- | :------------ | :---------- |
+| `bufferOccupancyABR` | `false` | Set to `true` if dash.js' new ABR logic should be applied. Caveat: not stable yet. |
 | `type` | `video/mp4` | The video format the browser's `MediaSource` implementation should be able to play. |
 | `codecs` | `avc1.42c01e, mp4a.40.2` | The codecs the browser's `MediaSource` implementation should be able to play. |
 
