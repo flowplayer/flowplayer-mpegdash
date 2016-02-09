@@ -63,7 +63,7 @@ Features
 --------
 
 - packs a compatibility tested version - current:
-  https://github.com/Dash-Industry-Forum/dash.js/commit/7658318ea2957521b2d1f0e590eaa5bcd8b69d05 - of
+  [RC3 v2.0.0](https://github.com/Dash-Industry-Forum/dash.js/commit/070936b814dcbfa828f77e7c67b4fe3706a40daa) - of
   [dash.js](https://github.com/Dash-Industry-Forum/dash.js) by the
   [Dash Industry Forum](http://dashif.org/software/)
 - engine is only loaded if the client supports MPEG-DASH, see also the `codecs`
