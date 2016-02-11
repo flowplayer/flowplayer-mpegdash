@@ -135,7 +135,7 @@
                             player.trigger('finish', [player]);
 
                             bean.one(videoTag, "seeked." + engineName, function () {
-                                if (!videoTag.currentTime) {
+                                if (!~videoTag.currentTime) {
                                     videoTag.play();
                                 }
                             });
