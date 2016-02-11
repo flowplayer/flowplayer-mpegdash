@@ -193,6 +193,7 @@
 
                             common.prepend(common.find(".fp-player", root)[0], videoTag);
                             mediaPlayer.initialize(videoTag, video.src, false);
+                            player.engine[engineName] = mediaPlayer;
 
                         } else {
                             mediaPlayer.attachView(videoTag);
