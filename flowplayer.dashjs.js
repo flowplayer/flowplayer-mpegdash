@@ -133,12 +133,6 @@
                         });
                         bean.on(videoTag, "ended", function () {
                             player.trigger('finish', [player]);
-
-                            bean.one(videoTag, "seeked." + engineName, function () {
-                                if (!videoTag.currentTime) {
-                                    videoTag.play();
-                                }
-                            });
                         });
                         bean.on(videoTag, "volumechange", function () {
                             player.trigger('volume', [player, videoTag.volume]);
