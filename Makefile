@@ -36,5 +36,8 @@ zip: clean dist
 clean:
 	@ rm -rf $(DIST)
 
+lint:
+	@ npm run -s lint
+
 deps:
 	@ rm -rf $(DASHJSMOD) && npm install && npm run prepare
