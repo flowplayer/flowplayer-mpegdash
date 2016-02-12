@@ -1,13 +1,14 @@
 
 DIST=dist
 JS=$(DIST)/flowplayer.dashjs
+DASHJSMOD=node_modules/dashjs
 
 GIT_ID=${shell git rev-parse --short HEAD }
 
 default:
 	@ mkdir -p $(DIST)
 	@ sed -ne 's/\$$GIT_ID\$$/$(GIT_ID)/; /^\/\*!/,/^\*\// p' flowplayer.dashjs.js > $(JS).min.js
-	@ cat dash.mediaplayer.min.js >> $(JS).min.js
+	@ cat $(DASHJSMOD)/dist/dash.mediaplayer.min.js >> $(JS).min.js
 	@ echo '' >> $(JS).min.js
 	@ sed -e '/"use strict";/ d' flowplayer.dashjs.js | uglifyjs --mangle -c >> $(JS).min.js
 
@@ -20,7 +21,7 @@ v5:
 
 debug:
 	@ mkdir -p $(DIST)
-	@ cp dash.mediaplayer.debug.js dash.all.js $(DIST)/
+	@ cp $(DASHJSMOD)/dist/dash.mediaplayer.debug.js dash.all.js $(DIST)/
 	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' flowplayer.dashjs.js > $(JS).js
 	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' flowplayer.dashjs-v5.js > $(JS)-v5.js
 
@@ -34,3 +35,6 @@ zip: clean dist
 
 clean:
 	@ rm -rf $(DIST)
+
+deps:
+	@ rm -rf $(DASHJSMOD) && npm install && npm run prepare

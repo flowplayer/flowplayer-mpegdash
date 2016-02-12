@@ -158,6 +158,18 @@ window.onload = function () {
 </html>
 ```
 
+### Building the plugin
+
+Build requirement:
+
+- [nodejs](https://nodejs.org) with [npm](https://www.npmjs.com)
+
+```sh
+cd flowplayer-mpegdash
+make deps
+make
+```
+
 Known issues
 ------------
 

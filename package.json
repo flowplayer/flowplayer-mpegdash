@@ -1,0 +1,35 @@
+{
+  "name": "flowplayer-dashjs",
+  "version": "0.1.0",
+  "description": "Flowplayer dashjs plugin",
+  "main": "flowplayer.dashjs.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "jslint --edition=latest --devel flowplayer.hlsjs.js",
+    "minify": "uglifyjs -m -c",
+    "prepare": "cd node_modules/dashjs; npm install; grunt dist; cd -"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flowplayer/flowplayer-mpegdash"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/flowplayer/flowplayer-mpegdash/issues"
+  },
+  "homepage": "https://github.com/flowplayer/flowplayer-mpegdash",
+  "dependencies": {
+    "dashjs": "git://github.com/Dash-Industry-Forum/dash.js#dca1067bba2a95b93c7a38f8deb04aedbe2f1217"
+  },
+  "peerDependencies": {
+    "flowplayer": "^6.0.3"
+  },
+  "devDependencies": {
+    "jslint": "^0.9.5",
+    "uglifyjs": "^2.4.10"
+  },
+  "jshintConfig": {
+    "undef": true
+  }
+}
