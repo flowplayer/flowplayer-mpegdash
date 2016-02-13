@@ -9,17 +9,15 @@ GIT_ID=${shell git rev-parse --short HEAD }
 
 default:
 	@ mkdir -p $(DIST)
-	@ sed -ne 's/\$$GIT_ID\$$/$(GIT_ID)/; /^\/\*!/,/^\*\// p' flowplayer.dashjs.js > $(JS).min.js
+	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' -e '/"use strict";/d' flowplayer.dashjs.js | \
+		npm run minify > $(JS).min.js
 	@ cat $(DASHJSMOD)/dist/dash.mediaplayer.min.js >> $(JS).min.js
-	@ echo '' >> $(JS).min.js
-	@ sed -e '/"use strict";/ d' flowplayer.dashjs.js | uglifyjs --mangle -c >> $(JS).min.js
 
 v5:
 	@ mkdir -p $(DIST)
-	@ sed -ne 's/\$$GIT_ID\$$/$(GIT_ID)/; /^\/\*!/,/^\*\// p' flowplayer.dashjs-v5.js > $(JS)-v5.min.js
+	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' -e '/"use strict";/d' flowplayer.dashjs-v5.js | \
+		npm run minify > $(JS)-v5.min.js
 	@ cat dash.all.js >> $(JS)-v5.min.js
-	@ echo '' >> $(JS)-v5.min.js
-	@ sed -e '/"use strict";/ d' flowplayer.dashjs-v5.js | uglifyjs --mangle -c >> $(JS)-v5.min.js
 
 debug:
 	@ mkdir -p $(DIST)

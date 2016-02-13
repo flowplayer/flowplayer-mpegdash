@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "jslint --edition=latest --devel flowplayer.dashjs.js",
-    "minify": "uglifyjs -m -c",
+    "minify": "uglifyjs -m -c --comments='/Flowplayer Oy/' -o /dev/stdout -",
     "prepare": "cd node_modules/dashjs; npm install; grunt dist; cd -"
   },
   "repository": {
