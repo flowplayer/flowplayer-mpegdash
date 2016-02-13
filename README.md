@@ -73,7 +73,7 @@ Features
 --------
 
 - packs a compatibility tested version - current:
-  [RC4 v2.0.0](https://github.com/Dash-Industry-Forum/dash.js/commit/dca1067bba2a95b93c7a38f8deb04aedbe2f1217) - of
+  [v2.0.0](https://github.com/Dash-Industry-Forum/dash.js/releases/tag/v2.0.0) - of
   [dash.js](https://github.com/Dash-Industry-Forum/dash.js) by the
   [Dash Industry Forum](http://dashif.org/software/)
 - engine is only loaded if the client supports MPEG-DASH, see also the `codecs`
@@ -85,11 +85,9 @@ Features
 Stream compatibility
 --------------------
 
-*Note:* dash.js v2 is currently in development, no sample player available.
-
 DASH is not a fixed standard yet, but a moving target. As the plugin is based on dash.js stream
 compatibility can be cross-checked in the latest
-[dash.js sample player](http://dashif.org/reference/players/javascript/v1.6.0/samples/dash-if-reference-player/).
+[dash.js sample player](http://dashif.org/reference/players/javascript/v2.0.0/samples/dash-if-reference-player/).
 
 *Caveat:* WebM-DASH streams are extremely unlikely to work correctly with dash.js - or any other
 available client library we know about. - Hence historically the name of the plugin Git repository.
@@ -112,9 +110,6 @@ toolchain.
 Debugging
 ---------
 
-*Note:* This section does currently not apply as dash.js v2 assets are not yet available from their
-CDN!
-
 A quick way to find out whether the currently packed version of dash.js is causing a problem is to
 load the components separately using the latest development build or release from the dash.js CDN:
 
@@ -122,7 +117,7 @@ load the components separately using the latest development build or release fro
 <script src="//releases.flowplayer.org/6.0.5/flowplayer.min.js"></script>
 
 <!-- load dash.js latest release -->
-<!-- <script src="//cdn.dashjs.org/v1.6.0/dash.all.js"></script> -->
+<!-- <script src="//cdn.dashjs.org/v2.0.0/dash.all.js"></script> -->
 
 <!-- or load dash.js latest dev build -->
 <script src="//cdn.dashjs.org/latest/dash.all.js"></script>
