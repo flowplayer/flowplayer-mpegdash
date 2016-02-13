@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+export PATH := ./node_modules/.bin/:$(PATH)
 
 DIST=dist
 JS=$(DIST)/flowplayer.dashjs
