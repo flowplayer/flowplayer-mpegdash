@@ -55,7 +55,7 @@ certain extent for debugging.
 
 ### Access to dash.js API
 
-The [dash.js MediaPlayer API](http://vm2.dashif.org/dash.js/docs/jsdocs/MediaPlayer.html#MediaPlayer) can be accessed via the `engine.dash` object of the Flowplayer API.
+The [dash.js MediaPlayer API](http://cdn.dashjs.org/latest/jsdoc/index.html#MediaPlayer) can be accessed via the `engine.dash` object of the Flowplayer API.
 
 CORS
 ----
