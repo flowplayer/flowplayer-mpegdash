@@ -21,7 +21,7 @@
 
 */
 
-(function () {
+(function (flowplayer, dashjs) {
     "use strict";
     var engineName = "dash",
         mse = window.MediaSource,
@@ -272,4 +272,6 @@
 
     }
 
-}());
+}.apply(null, (typeof module === 'object' && module.exports)
+    ? [require('flowplayer'), require('dashjs')]
+    : [window.flowplayer, window.dashjs]));
