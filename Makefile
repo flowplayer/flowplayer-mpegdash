@@ -11,7 +11,7 @@ default:
 	@ mkdir -p $(DIST)
 	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' -e '/"use strict";/d' flowplayer.dashjs.js | \
 		npm run minify > $(JS).min.js
-	@ cat $(DASHJSMOD)/dist/dash.mediaplayer.min.js >> $(JS).min.js
+	@ sed -e '/sourceMappingURL=dash/d' $(DASHJSMOD)/dist/dash.mediaplayer.min.js >> $(JS).min.js
 
 v5:
 	@ mkdir -p $(DIST)
@@ -40,4 +40,4 @@ lint:
 	@ npm run -s lint
 
 deps:
-	@ rm -rf $(DASHJSMOD) && npm install && npm run prepare
+	@ npm install
