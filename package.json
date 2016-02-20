@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "jslint --edition=latest --devel flowplayer.dashjs.js",
-    "minify": "uglifyjs -m -c --comments='/Flowplayer Oy/' -o /dev/stdout -"
+    "build": "webpack",
+    "mini5": "uglifyjs flowplayer.dashjs-v5.js -m -c"
   },
   "repository": {
     "type": "git",
@@ -25,8 +26,12 @@
     "flowplayer": "^6.0.3"
   },
   "devDependencies": {
+    "babel-core": "^6.5.1",
+    "babel-loader": "^6.2.2",
+    "babel-preset-es2015": "^6.5.0",
     "jslint": "^0.9.5",
-    "uglifyjs": "^2.4.10"
+    "uglifyjs": "^2.4.10",
+    "webpack": "^1.12.13"
   },
   "jshintConfig": {
     "undef": true

@@ -27,6 +27,26 @@ clip: {
 }
 ```
 
+### CommonJS
+
+The plugin can be used in a [browserify](http://browserify.org) and/or
+[webpack](https://webpack.github.io/) environment with a
+[commonjs](http://requirejs.org/docs/commonjs.html) loader:
+
+```js
+var flowplayer = require('flowplayer');
+require('flowplayer-dashjs'); // Plugin injects itself to flowplayer
+
+flowplayer('#container', {
+  clip: {
+    sources: [{
+      type: 'application/dash+xml',
+      src: '//stream.flowplayer.org/bauhaus.mpd'
+    }]
+  }
+});
+```
+
 Plugin configuration
 --------------------
 

@@ -7,17 +7,15 @@ DASHJSMOD=node_modules/dashjs
 
 GIT_ID=${shell git rev-parse --short HEAD }
 
-default:
-	@ mkdir -p $(DIST)
-	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' -e '/"use strict";/d' flowplayer.dashjs.js | \
-		npm run minify > $(JS).min.js
-	@ sed -e '/sourceMappingURL=dash/d' $(DASHJSMOD)/dist/dash.mediaplayer.min.js >> $(JS).min.js
+webpack:
+	@ npm run build
 
 v5:
 	@ mkdir -p $(DIST)
-	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' -e '/"use strict";/d' flowplayer.dashjs-v5.js | \
-		npm run minify > $(JS)-v5.min.js
+	@ sed -ne 's/\$$GIT_ID\$$/$(GIT_ID)/; /^\/\*!/,/^\*\// p' flowplayer.dashjs-v5.js > $(JS)-v5.min.js
 	@ cat dash.all.js >> $(JS)-v5.min.js
+	@ echo '' >> $(JS)-v5.min.js
+	@ npm run -s mini5 >> $(JS)-v5.min.js
 
 debug:
 	@ mkdir -p $(DIST)
@@ -25,7 +23,7 @@ debug:
 	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' flowplayer.dashjs.js > $(JS).js
 	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' flowplayer.dashjs-v5.js > $(JS)-v5.js
 
-all: default v5
+all: webpack v5
 
 dist: clean all debug
 	@ cp LICENSE.md $(DIST)/
