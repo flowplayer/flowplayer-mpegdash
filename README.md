@@ -137,10 +137,10 @@ load the components separately using the latest development build or release fro
 <script src="//releases.flowplayer.org/6.0.5/flowplayer.min.js"></script>
 
 <!-- load dash.js latest release -->
-<!-- <script src="//cdn.dashjs.org/v2.0.0/dash.all.js"></script> -->
+<!-- <script src="//cdn.dashjs.org/v2.0.0/dash.all.min.js"></script> -->
 
 <!-- or load dash.js latest dev build -->
-<script src="//cdn.dashjs.org/latest/dash.all.js"></script>
+<script src="//cdn.dashjs.org/latest/dash.all.min.js"></script>
 
 <!-- load latest plugin standalone -->
 <script src="//releases.flowplayer.org/dashjs/flowplayer.dashjs.js"></script>
@@ -154,7 +154,7 @@ exclusion with a simple page using bare dash.js, like:
 <html>
 <head>
 
-<script src="//releases.flowplayer.org/dashjs/dash.all.js"></script>
+<script src="//cdn.dashjs.org/v2.0.0/dash.all.min.js"></script>
 
 <script>
 window.onload = function () {

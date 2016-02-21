@@ -19,7 +19,6 @@ v5:
 
 debug:
 	@ mkdir -p $(DIST)
-	@ cp $(DASHJSMOD)/dist/dash.mediaplayer.debug.js dash.all.js $(DIST)/
 	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' flowplayer.dashjs.js > $(JS).js
 	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' flowplayer.dashjs-v5.js > $(JS)-v5.js
 
