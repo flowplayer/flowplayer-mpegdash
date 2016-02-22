@@ -93,7 +93,7 @@
                         bean.on(videoTag, "timeupdate", function () {
                             player.trigger('progress', [player, videoTag.currentTime - livestartpos]);
                         });
-                        bean.on(videoTag, "loadedmetadata", function () {
+                        bean.on(videoTag, "loadeddata", function () {
                             extend(video, {
                                 duration: videoTag.duration,
                                 seekable: videoTag.seekable.end(null),
