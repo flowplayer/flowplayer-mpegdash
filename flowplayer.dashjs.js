@@ -27,6 +27,7 @@
         mse = window.MediaSource,
         common = flowplayer.common,
         extend = flowplayer.extend,
+        version = flowplayer.version,
         dashconf,
 
         isDashType = function (typ) {
@@ -37,6 +38,8 @@
             var bean = flowplayer.bean,
                 mediaPlayer,
                 videoTag,
+                bc,
+                has_bg,
 
                 engine = {
                     engineName: engineName,
@@ -242,10 +245,36 @@
                     }
                 };
 
+            // pre 6.0.4: no boolean api.conf.poster and no poster with autoplay
+            if (/^6\.0\.[0-3]$/.test(version) &&
+                    !player.conf.splash && !player.conf.poster && !player.conf.autoplay) {
+                bc = common.css(root, 'backgroundColor');
+                // spaces in rgba arg mandatory for recognition
+                has_bg = common.css(root, 'backgroundImage') !== "none" ||
+                        (bc && bc !== "rgba(0, 0, 0, 0)" && bc !== "transparent");
+                if (has_bg) {
+                    player.conf.poster = true;
+                }
+            }
+            if (player.conf.poster) {
+                // when player is stopped the engine is too late to the party:
+                // poster is already removed, poster state must be reset
+                player.on("stop." + engineName, function () {
+                    var posterClass = "is-poster";
+
+                    setTimeout(function () {
+                        common.addClass(root, posterClass);
+                        player.one("progress." + engineName, function () {
+                            common.removeClass(root, posterClass);
+                        });
+                    }, 0);
+                });
+            }
+
             return engine;
         };
 
-    if (mse && flowplayer.version.indexOf("5.") !== 0) {
+    if (mse && version.indexOf("5.") !== 0) {
         // only load engine if it can be used
         engineImpl.engineName = engineName; // must be exposed
         engineImpl.canPlay = function (type, conf) {
