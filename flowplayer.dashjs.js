@@ -143,6 +143,7 @@
 
                         if (init) {
                             mediaPlayer = dashjs.MediaPlayer().create();
+                            player.engine[engineName] = mediaPlayer;
 
                             // new ABR algo
                             mediaPlayer.enableBufferOccupancyABR(!!dashconf.bufferOccupancyABR);
