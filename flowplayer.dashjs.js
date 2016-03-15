@@ -205,10 +205,17 @@
 
                         }
 
-                        if (videoTag.paused && (video.autoplay || conf.autoplay)) {
-                            bean.on(videoTag, "loadeddata." + engineName, function () {
-                                videoTag.play();
-                            });
+                        if (conf.autoplay || video.autoplay) {
+                            // at least some Android requires extra load
+                            // https://github.com/flowplayer/flowplayer/issues/910
+                            if (!flowplayer.support.zeropreload) {
+                                videoTag.load();
+                            }
+                            if (videoTag.paused) {
+                                bean.on(videoTag, "loadeddata." + engineName, function () {
+                                    videoTag.play();
+                                });
+                            }
                         }
                     },
 
