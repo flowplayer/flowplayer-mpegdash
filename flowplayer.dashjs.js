@@ -246,6 +246,7 @@
                         if (mediaPlayer) {
                             mediaPlayer.reset();
                             mediaPlayer = 0;
+                            player.off("." + engineName);
                             bean.off(videoTag);
                             common.removeNode(videoTag);
                             videoTag = 0;
