@@ -63,6 +63,7 @@
                     load: function (video) {
                         var init = !mediaPlayer,
                             conf = player.conf,
+                            autoplay = !!video.autoplay || conf.autoplay,
                             livestartpos = 0;
 
                         if (init) {
@@ -70,7 +71,7 @@
                                     || common.find(".fp-player > video", root)[0]);
                             videoTag = common.createElement("video", {
                                 className: "fp-engine " + engineName + "-engine",
-                                autoplay: conf.autoplay
+                                autoplay: autoplay
                                     ? "autoplay"
                                     : false
                             });
@@ -205,7 +206,7 @@
 
                         }
 
-                        if (conf.autoplay || video.autoplay) {
+                        if (autoplay) {
                             // at least some Android requires extra load
                             // https://github.com/flowplayer/flowplayer/issues/910
                             if (!flowplayer.support.zeropreload) {
