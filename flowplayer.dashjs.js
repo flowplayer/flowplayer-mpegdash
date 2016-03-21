@@ -30,11 +30,14 @@
         version = flowplayer.version,
         dashconf,
 
-        isDashType = function (typ) {
-            return typ.toLowerCase() === "application/dash+xml";
+        dashCanPlay = function (sourceType, dashType, dashCodecs) {
+            return sourceType.toLowerCase() === "application/dash+xml" &&
+                    mse.isTypeSupported(dashType + ';codecs="' + dashCodecs + '"') &&
+                    // Android MSE advertises he-aac, but fails
+                    (dashCodecs.indexOf("mp4a.40.5") < 0 || navigator.userAgent.indexOf("Android") < 0);
         },
 
-        engineImpl = function mpegdashEngine(player, root) {
+        engineImpl = function dashjsEngine(player, root) {
             var bean = flowplayer.bean,
                 mediaPlayer,
                 videoTag,
@@ -46,12 +49,15 @@
 
                     pick: function (sources) {
                         var i,
-                            source;
+                            source,
+                            dashType,
+                            dashCodecs;
 
                         for (i = 0; i < sources.length; i += 1) {
                             source = sources[i];
-                            if (isDashType(source.type)
-                                    && (!source.engine || source.engine === engineName)) {
+                            dashType = source.dashType || dashconf.type;
+                            dashCodecs = source.dashCodecs || dashconf.codecs;
+                            if (dashCanPlay(source.type, dashType, dashCodecs)) {
                                 if (typeof source.src === 'string') {
                                     source.src = common.createAbsoluteUrl(source.src);
                                 }
@@ -298,11 +304,10 @@
             // inject dash conf at earliest opportunity
             dashconf = extend({
                 type: "video/mp4",
-                codecs: "avc1.42c01e, mp4a.40.2"
+                codecs: "avc1.42c01e,mp4a.40.2"
             }, flowplayer.conf[engineName], conf[engineName], conf.clip[engineName]);
 
-            return isDashType(type) &&
-                    mse.isTypeSupported(dashconf.type + '; codecs="' + dashconf.codecs + '"');
+            return dashCanPlay(type, dashconf.type, dashconf.codecs);
         };
 
         // put on top of engine stack
