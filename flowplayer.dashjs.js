@@ -83,7 +83,9 @@
                             dashEvents = dashjs.MediaPlayer.events,
                             autoplay = !!video.autoplay || conf.autoplay,
                             posterClass = "is-poster",
-                            livestartpos = video.live ? -1 : 0;
+                            livestartpos = video.live
+                                ? -1
+                                : 0;
 
                         if (init) {
                             common.removeNode(common.findDirect("video", root)[0]
@@ -206,43 +208,43 @@
 
                                     delete data.type;
                                     switch (key) {
-                                        case "ERROR":
-                                            switch (data.error) {
-                                            case "download":
-                                                fperr = 4;
+                                    case "ERROR":
+                                        switch (data.error) {
+                                        case "download":
+                                            fperr = 4;
+                                            break;
+                                        case "manifestError":
+                                            fperr = 5;
+                                            break;
+                                        case "mediasource":
+                                            switch (e.event) {
+                                            case "MEDIA_ERR_DECODE":
+                                                fperr = 3;
                                                 break;
-                                            case "manifestError":
+                                            case "MEDIA_ERR_SRC_NOT_SUPPORTED":
                                                 fperr = 5;
                                                 break;
-                                            case "mediasource":
-                                                switch (e.event) {
-                                                case "MEDIA_ERR_DECODE":
-                                                    fperr = 3;
-                                                    break;
-                                                case "MEDIA_ERR_SRC_NOT_SUPPORTED":
-                                                    fperr = 5;
-                                                    break;
-                                                case "MEDIA_ERR_NETWORK":
-                                                    fperr = 2;
-                                                    break;
-                                                case "MEDIA_ERR_ABORTED":
-                                                    fperr = 1;
-                                                    break;
-                                                }
+                                            case "MEDIA_ERR_NETWORK":
+                                                fperr = 2;
+                                                break;
+                                            case "MEDIA_ERR_ABORTED":
+                                                fperr = 1;
                                                 break;
                                             }
-                                            if (fperr) {
-                                                errobj = {code: fperr};
-                                                if (fperr > 2) {
-                                                    errobj.video = extend(video, {
-                                                        src: video.src,
-                                                        url: data.event.url || video.src
-                                                    });
-                                                }
-                                                player.trigger('error', [player, errobj]);
-                                                return;
-                                            }
                                             break;
+                                        }
+                                        if (fperr) {
+                                            errobj = {code: fperr};
+                                            if (fperr > 2) {
+                                                errobj.video = extend(video, {
+                                                    src: video.src,
+                                                    url: data.event.url || video.src
+                                                });
+                                            }
+                                            player.trigger('error', [player, errobj]);
+                                            return;
+                                        }
+                                        break;
                                     }
 
                                     player.trigger(e.type, [player, data]);
