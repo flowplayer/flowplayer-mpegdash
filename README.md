@@ -7,25 +7,13 @@ playback of [DASH](https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over
 Usage
 -----
 
-Load the latest plugin after the Flowplayer script:
+See: https://flowplayer.org/docs/plugins.html#hlsjs
 
-```html
-<script src="//releases.flowplayer.org/6.0.5/flowplayer.min.js"></script>
-<script src="//releases.flowplayer.org/dashjs/flowplayer.dashjs.min.js"></script>
-```
-
-Sources configuration:
-
-```js
-clip: {
-   sources: [
-        { type: "application/dash+xml",  src: "//example.com/video.mpd" },
-        { type: "application/x-mpegurl", src: "//example.com/video.m3u8" },
-        { type: "video/webm",            src: "//example.com/video.webm" },
-        { type: "video/mp4",             src: "//example.com/video.mp4" }
-   ]
-}
-```
+- [compatibility](https://flowplayer.org/docs/plugins.html#dashjs-compatibility)
+- [loading the assets](https://flowplayer.org/docs/plugins.html#dashjs-assets)
+- [configuration](https://flowplayer.org/docs/plugins.html#dashjs-configuration)
+- [dash options](https://flowplayer.org/docs/plugins.html#dash-options)
+- [dashjs API](https://flowplayer.org/docs/plugins.html#dashjs-api)
 
 ### CommonJS
 
@@ -46,43 +34,6 @@ flowplayer('#container', {
   }
 });
 ```
-
-Plugin configuration
---------------------
-
-The plugin provides the following [player option](https://flowplayer.org/docs/setup.html#player-options):
-
-The plugin provides the `dash` option on the
-[global](https://flowplayer.org/docs/setup.html#global-configuration)
-[player](https://flowplayer.org/docs/setup.html#player-options) and
-[clip](https://flowplayer.org/docs/setup.html#player-options) levels.
-
-| option | type | description | html configurable |
-| :----- | :--- | :---------- | :---------------- |
-| `dash` | `object` | Signals the browser which playback capabilites are expected of its `MediaSource` implementation. | no |
-
-The `dash` configuration object accepts the following parameters:
-
-| option | default value | description |
-| :----- | :------------ | :---------- |
-| `bufferOccupancyABR` | `false` | Set to `true` if dash.js' new ABR logic should be applied. Caveat: not stable yet. |
-| `type` | `video/mp4` | The video format the browser's `MediaSource` implementation should be able to play. |
-| `codecs` | `avc1.42c01e, mp4a.40.2` | The codecs the browser's `MediaSource` implementation should be able to play. |
-
-**Caveat:** codecs and even type feature detection and evaluation is broken in many browsers.
-Changing the configuration may have no or misleading effects. Not useful in production, only to a
-certain extent for debugging.
-
-### Access to dash.js API
-
-The [dash.js MediaPlayer API](http://cdn.dashjs.org/latest/jsdoc/index.html#MediaPlayer) can be accessed via the `engine.dash` object of the Flowplayer API.
-
-CORS
-----
-
-The DASH streams must be loaded from a server with a
-[cross domain policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)
-permitting `GET` requests.
 
 Demo
 ----
@@ -144,6 +95,13 @@ load the components separately using the latest development build or release fro
 
 <!-- load latest plugin standalone -->
 <script src="//releases.flowplayer.org/dashjs/flowplayer.dashjs.js"></script>
+
+<script>
+// turn on dashjs debugging
+flowplayer.conf.dash = {
+  debug: true
+};
+</script>
 ```
 
 Conversely, to find out whether there's a problem with the actual plugin component can be tested by
@@ -188,7 +146,6 @@ make
 Known issues
 ------------
 
-- encrypted streams not yet supported
 - Android: Until
   [this bug fix](https://chromium.googlesource.com/chromium/src.git/+/0b5ec458acf03e3507a3737cfc483df0694cf803%5E!/)
   has propagated onto devices, streams with High profile AAC audio (`mp4a.40.5`) may not play.
