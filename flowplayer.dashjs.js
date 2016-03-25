@@ -196,6 +196,7 @@
                             mediaPlayer.setAutoPlay(false);
                             // for seeking in paused state
                             mediaPlayer.setScheduleWhilePaused(true);
+                            mediaPlayer.getDebug().setLogToBrowserConsole(!!dashconf.debug);
 
                             Object.keys(dashEvents).forEach(function (key) {
                                 mediaPlayer.on(dashEvents[key], function (e) {
