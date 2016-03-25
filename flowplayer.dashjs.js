@@ -69,8 +69,20 @@
                     load: function (video) {
                         var init = !mediaPlayer,
                             conf = player.conf,
+                            EVENTS = {
+                                ended: "finish",
+                                loadeddata: "ready",
+                                pause: "pause",
+                                play: "resume",
+                                progress: "buffer",
+                                ratechange: "speed",
+                                seeked: "seek",
+                                timeupdate: "progress",
+                                volumechange: "volume"
+                            },
                             autoplay = !!video.autoplay || conf.autoplay,
-                            livestartpos = 0;
+                            posterClass = "is-poster",
+                            livestartpos = video.live ? -1 : 0;
 
                         if (init) {
                             common.removeNode(common.findDirect("video", root)[0]
@@ -86,67 +98,89 @@
                             mediaPlayer.reset();
                         }
 
-                        bean.on(videoTag, "play", function () {
-                            player.trigger('resume', [player]);
-                        });
-                        bean.on(videoTag, "pause", function () {
-                            player.trigger('pause', [player]);
-                        });
-                        bean.one(videoTag, "timeupdate." + engineName, function () {
-                            if (video.live) {
-                                livestartpos = videoTag.currentTime;
-                            }
-                        });
-                        bean.on(videoTag, "timeupdate", function () {
-                            player.trigger('progress', [player, videoTag.currentTime - livestartpos]);
-                        });
-                        bean.on(videoTag, "loadeddata", function () {
-                            extend(video, {
-                                duration: videoTag.duration,
-                                seekable: videoTag.seekable.end(null),
-                                width: videoTag.videoWidth,
-                                height: videoTag.videoHeight,
-                                url: videoTag.currentSrc
-                            });
-                            player.trigger('ready', [player, video]);
-                        });
-                        bean.on(videoTag, "seeked", function () {
-                            player.trigger('seek', [player, videoTag.currentTime]);
-                        });
-                        bean.on(videoTag, "progress", function (e) {
-                            var ct = videoTag.currentTime,
-                                buffer = 0,
-                                buffend,
-                                buffered,
-                                last,
-                                i;
+                        Object.keys(EVENTS).forEach(function (key) {
+                            var flow = EVENTS[key],
+                                type = key + "." + engineName,
+                                arg;
 
-                            try {
-                                buffered = videoTag.buffered;
-                                last = buffered.length - 1;
-                                buffend = 0;
-                                // cycle through time ranges to obtain buffer
-                                // nearest current time
-                                if (ct) {
-                                    for (i = last; i > -1; i -= 1) {
-                                        buffend = buffered.end(i);
-
-                                        if (buffend >= ct) {
-                                            buffer = buffend;
-                                        }
-                                    }
+                            bean.on(videoTag, type, function (e) {
+                                if (conf.debug && flow.indexOf("progress") < 0) {
+                                    console.log(type, "->", flow, e.originalEvent);
                                 }
-                            } catch (ignore) {}
+                                if (!player.ready && flow.indexOf("ready") < 0) {
+                                    return;
+                                }
 
-                            video.buffer = buffer;
-                            player.trigger('buffer', [player, e]);
+                                var ct,
+                                    buffer = 0,
+                                    buffend = 0,
+                                    buffered,
+                                    i;
+
+                                switch (flow) {
+                                case "ready":
+                                    arg = extend(video, {
+                                        duration: videoTag.duration,
+                                        seekable: videoTag.seekable.end(null),
+                                        width: videoTag.videoWidth,
+                                        height: videoTag.videoHeight,
+                                        url: videoTag.currentSrc
+                                    });
+                                    break;
+                                case "resume":
+                                    if (player.poster) {
+                                        player.poster = false;
+                                        common.removeClass(root, posterClass);
+                                    }
+                                    break;
+                                case "seek":
+                                case "progress":
+                                    ct = videoTag.currentTime;
+                                    if (livestartpos < 0) {
+                                        livestartpos = ct;
+                                    }
+                                    arg = ct - livestartpos;
+                                    break;
+                                case "speed":
+                                    arg = videoTag.playbackRate;
+                                    break;
+                                case "volume":
+                                    arg = videoTag.volume;
+                                    break;
+                                case "buffer":
+                                    try {
+                                        ct = videoTag.currentTime;
+                                        // cycle through time ranges to obtain buffer
+                                        // nearest current time
+                                        if (ct) {
+                                            buffered = videoTag.buffered;
+                                            for (i = buffered.length - 1; i > -1; i -= 1) {
+                                                buffend = buffered.end(i);
+
+                                                if (buffend >= ct) {
+                                                    buffer = buffend;
+                                                }
+                                            }
+                                        }
+                                    } catch (ignore) {}
+                                    video.buffer = buffer;
+                                    arg = e;
+                                    break;
+                                }
+
+                                player.trigger(flow, [player, arg]);
+                            });
                         });
-                        bean.on(videoTag, "ended", function () {
-                            player.trigger('finish', [player]);
-                        });
-                        bean.on(videoTag, "volumechange", function () {
-                            player.trigger('volume', [player, videoTag.volume]);
-                        });
+
+                        if (conf.poster) {
+                            // engine too late, poster already removed
+                            player.on("stop." + engineName, function () {
+                                setTimeout(function () {
+                                    player.poster = true;
+                                    common.addClass(root, posterClass);
+                                }, 0);
+                            });
+                        }
 
                         if (init) {
                             mediaPlayer = dashjs.MediaPlayer().create();
@@ -251,10 +285,11 @@
 
                     unload: function () {
                         if (mediaPlayer) {
+                            bean.off(root, "." + engineName);
+                            player.off("." + engineName);
                             mediaPlayer.reset();
                             mediaPlayer = 0;
-                            player.off("." + engineName);
-                            bean.off(videoTag);
+                            bean.off(videoTag, "." + engineName);
                             common.removeNode(videoTag);
                             videoTag = 0;
                         }
@@ -271,20 +306,6 @@
                 if (has_bg) {
                     player.conf.poster = true;
                 }
-            }
-            if (player.conf.poster) {
-                // when player is stopped the engine is too late to the party:
-                // poster is already removed, poster state must be reset
-                player.on("stop." + engineName, function () {
-                    var posterClass = "is-poster";
-
-                    setTimeout(function () {
-                        common.addClass(root, posterClass);
-                        player.one("progress." + engineName, function () {
-                            common.removeClass(root, posterClass);
-                        });
-                    }, 0);
-                });
             }
 
             return engine;
