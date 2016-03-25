@@ -80,6 +80,7 @@
                                 timeupdate: "progress",
                                 volumechange: "volume"
                             },
+                            dashEvents = dashjs.MediaPlayer.events,
                             autoplay = !!video.autoplay || conf.autoplay,
                             posterClass = "is-poster",
                             livestartpos = video.live ? -1 : 0;
@@ -196,45 +197,56 @@
                             // for seeking in paused state
                             mediaPlayer.setScheduleWhilePaused(true);
 
-                            mediaPlayer.on("error", function (e) {
-                                var fperr,
-                                    errobj;
+                            Object.keys(dashEvents).forEach(function (key) {
+                                mediaPlayer.on(dashEvents[key], function (e) {
+                                    var data = extend({}, e),
+                                        fperr,
+                                        errobj;
 
-                                switch (e.error) {
-                                case "download":
-                                    fperr = 4;
-                                    break;
-                                case "manifestError":
-                                    fperr = 5;
-                                    break;
-                                case "mediasource":
-                                    switch (e.event) {
-                                    case "MEDIA_ERR_DECODE":
-                                        fperr = 3;
-                                        break;
-                                    case "MEDIA_ERR_SRC_NOT_SUPPORTED":
-                                        fperr = 5;
-                                        break;
-                                    case "MEDIA_ERR_NETWORK":
-                                        fperr = 2;
-                                        break;
-                                    case "MEDIA_ERR_ABORTED":
-                                        fperr = 1;
-                                        break;
+                                    delete data.type;
+                                    switch (key) {
+                                        case "ERROR":
+                                            switch (data.error) {
+                                            case "download":
+                                                fperr = 4;
+                                                break;
+                                            case "manifestError":
+                                                fperr = 5;
+                                                break;
+                                            case "mediasource":
+                                                switch (e.event) {
+                                                case "MEDIA_ERR_DECODE":
+                                                    fperr = 3;
+                                                    break;
+                                                case "MEDIA_ERR_SRC_NOT_SUPPORTED":
+                                                    fperr = 5;
+                                                    break;
+                                                case "MEDIA_ERR_NETWORK":
+                                                    fperr = 2;
+                                                    break;
+                                                case "MEDIA_ERR_ABORTED":
+                                                    fperr = 1;
+                                                    break;
+                                                }
+                                                break;
+                                            }
+                                            if (fperr) {
+                                                errobj = {code: fperr};
+                                                if (fperr > 2) {
+                                                    errobj.video = extend(video, {
+                                                        src: video.src,
+                                                        url: data.event.url || video.src
+                                                    });
+                                                }
+                                                player.trigger('error', [player, errobj]);
+                                                return;
+                                            }
+                                            break;
                                     }
-                                    break;
-                                }
-                                if (fperr) {
-                                    errobj = {code: fperr};
-                                    if (fperr > 2) {
-                                        errobj.video = extend(video, {
-                                            src: video.src,
-                                            url: e.event.url || video.src
-                                        });
-                                    }
-                                    player.trigger('error', [player, errobj]);
-                                }
-                            }, false);
+
+                                    player.trigger(e.type, [player, data]);
+                                }, false);
+                            });
 
                             common.prepend(common.find(".fp-player", root)[0], videoTag);
                             mediaPlayer.initialize(videoTag, video.src, false);
