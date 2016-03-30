@@ -97,8 +97,6 @@
                                     : false
                             });
                             videoTag.setAttribute("x-webkit-airplay", "allow");
-                        } else {
-                            mediaPlayer.reset();
                         }
 
                         Object.keys(EVENTS).forEach(function (key) {
@@ -256,7 +254,6 @@
                             player.engine[engineName] = mediaPlayer;
 
                         } else {
-                            mediaPlayer.attachView(videoTag);
                             mediaPlayer.attachSource(video.src);
 
                         }
