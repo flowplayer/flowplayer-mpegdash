@@ -83,9 +83,7 @@
                             dashEvents = dashjs.MediaPlayer.events,
                             autoplay = !!video.autoplay || conf.autoplay,
                             posterClass = "is-poster",
-                            livestartpos = video.live
-                                ? -1
-                                : 0;
+                            livestartpos = -1;
 
                         if (init) {
                             common.removeNode(common.findDirect("video", root)[0]
@@ -112,7 +110,7 @@
                                     return;
                                 }
 
-                                var ct,
+                                var ct = 0,
                                     buffer = 0,
                                     buffend = 0,
                                     buffered,
@@ -137,10 +135,14 @@
                                 case "seek":
                                 case "progress":
                                     ct = videoTag.currentTime;
-                                    if (livestartpos < 0) {
+                                    if (livestartpos > ct) {
+                                        livestartpos = -1;
+                                    } else if (livestartpos < 0 && ct) {
                                         livestartpos = ct;
                                     }
-                                    arg = ct - livestartpos;
+                                    arg = livestartpos > -1
+                                        ? ct - livestartpos
+                                        : 0;
                                     break;
                                 case "speed":
                                     arg = videoTag.playbackRate;
