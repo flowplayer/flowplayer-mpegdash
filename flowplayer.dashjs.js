@@ -81,7 +81,7 @@
                                 volumechange: "volume"
                             },
                             dashEvents = dashjs.MediaPlayer.events,
-                            autoplay = !!video.autoplay || conf.autoplay,
+                            autoplay = !!video.autoplay || !!conf.autoplay,
                             posterClass = "is-poster",
                             livestartpos = -1;
 
@@ -89,12 +89,13 @@
                             common.removeNode(common.findDirect("video", root)[0]
                                     || common.find(".fp-player > video", root)[0]);
                             videoTag = common.createElement("video", {
-                                className: "fp-engine " + engineName + "-engine",
-                                autoplay: autoplay
+                                "class": "fp-engine " + engineName + "-engine",
+                                "preload": conf.clip.preload || "metadata",
+                                "autoplay": autoplay
                                     ? "autoplay"
-                                    : false
+                                    : false,
+                                "x-webkit-airplay": "allow"
                             });
-                            videoTag.setAttribute("x-webkit-airplay", "allow");
                         }
 
                         Object.keys(EVENTS).forEach(function (key) {
