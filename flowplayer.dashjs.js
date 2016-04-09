@@ -90,9 +90,6 @@
                             videoTag = common.createElement("video", {
                                 "class": "fp-engine " + engineName + "-engine",
                                 "preload": conf.clip.preload || "metadata",
-                                "autoplay": autoplay
-                                    ? "autoplay"
-                                    : false,
                                 "x-webkit-airplay": "allow"
                             });
 
@@ -198,8 +195,6 @@
                             // caching can cause failures in playlists
                             // for the moment disable entirely
                             mediaPlayer.enableLastBitrateCaching(false);
-                            // handled by fp API
-                            mediaPlayer.setAutoPlay(false);
                             // for seeking in paused state
                             mediaPlayer.setScheduleWhilePaused(true);
                             mediaPlayer.getDebug().setLogToBrowserConsole(!!dashconf.debug);
@@ -257,20 +252,13 @@
                             });
 
                             common.prepend(common.find(".fp-player", root)[0], videoTag);
-                            mediaPlayer.initialize(videoTag, video.src, false);
+                            mediaPlayer.initialize(videoTag, video.src, autoplay);
                             player.engine[engineName] = mediaPlayer;
 
-                            if (autoplay) {
-                                // at least some Android requires extra load
-                                // https://github.com/flowplayer/flowplayer/issues/910
-                                if (!flowplayer.support.zeropreload) {
-                                    videoTag.load();
-                                }
-                                if (videoTag.paused) {
-                                    bean.on(videoTag, "loadeddata." + engineName, function () {
-                                        videoTag.play();
-                                    });
-                                }
+                            // at least some Android requires extra load
+                            // https://github.com/flowplayer/flowplayer/issues/910
+                            if (autoplay && !flowplayer.support.zeropreload) {
+                                videoTag.load();
                             }
 
                         } else {
