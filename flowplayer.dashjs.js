@@ -117,12 +117,12 @@
 
                                     switch (flow) {
                                     case "ready":
-                                        arg = extend(video, {
+                                        arg = extend(player.video, {
                                             duration: videoTag.duration,
                                             seekable: videoTag.seekable.end(null),
                                             width: videoTag.videoWidth,
                                             height: videoTag.videoHeight,
-                                            url: videoTag.currentSrc
+                                            url: player.video.src
                                         });
                                         break;
                                     case "resume":
@@ -207,6 +207,7 @@
                             Object.keys(dashEvents).forEach(function (key) {
                                 mediaPlayer.on(dashEvents[key], function (e) {
                                     var data = extend({}, e),
+                                        src = player.video.src,
                                         fperr,
                                         errobj;
 
@@ -241,8 +242,8 @@
                                             errobj = {code: fperr};
                                             if (fperr > 2) {
                                                 errobj.video = extend(video, {
-                                                    src: video.src,
-                                                    url: data.event.url || video.src
+                                                    src: src,
+                                                    url: data.event.url || src
                                                 });
                                             }
                                             player.trigger('error', [player, errobj]);
@@ -274,13 +275,14 @@
 
                         } else {
                             if ((player.video.src && video.src !== player.video.src) || video.index) {
-                                common.attr(videoTag, "autoplay", "autoplay");
+                                mediaPlayer.setAutoPlay(true);
                             }
-                            videoTag.type = video.type;
-                            videoTag.src = video.src;
                             mediaPlayer.attachSource(video.src);
 
                         }
+
+                        // update video object before ready
+                        player.video = video;
                     },
 
                     resume: function () {
