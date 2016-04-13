@@ -44,19 +44,6 @@
                 bc,
                 has_bg,
 
-                posterHack = function () {
-                    var posterClass = "is-poster";
-
-                    setTimeout(function () {
-                        common.addClass(root, posterClass);
-                        player.poster = true;
-                        bean.one(videoTag, "play." + engineName, function () {
-                            common.removeClass(root, posterClass);
-                            player.poster = false;
-                        });
-                    }, 0);
-                },
-
                 engine = {
                     engineName: engineName,
 
@@ -135,9 +122,6 @@
                                             height: videoTag.videoHeight,
                                             url: player.video.src
                                         });
-                                        if (conf.poster) {
-                                            posterHack();
-                                        }
                                         break;
                                     case "seek":
                                     case "progress":
@@ -183,7 +167,19 @@
                             });
 
                             if (conf.poster) {
-                                player.on("stop." + engineName, posterHack);
+                                var posterHack = function () {
+                                    var posterClass = "is-poster";
+
+                                    setTimeout(function () {
+                                        common.addClass(root, posterClass);
+                                        player.poster = true;
+                                        bean.one(videoTag, "play." + engineName, function () {
+                                            common.removeClass(root, posterClass);
+                                            player.poster = false;
+                                        });
+                                    }, 0);
+                                };
+                                player.one("ready." + engineName, posterHack).on("stop." + engineName, posterHack);
                             }
                             player.on("error." + engineName, function () {
                                 if (mediaPlayer) {
