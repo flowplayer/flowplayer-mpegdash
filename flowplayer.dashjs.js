@@ -87,9 +87,11 @@
                         if (!mediaPlayer) {
                             common.removeNode(common.findDirect("video", root)[0]
                                     || common.find(".fp-player > video", root)[0]);
+                            // dash.js enforces preload="auto" and
+                            // autoplay depending on initialization
+                            // so setting the attributes here will have no effect
                             videoTag = common.createElement("video", {
                                 "class": "fp-engine " + engineName + "-engine",
-                                "preload": conf.clip.preload || "metadata",
                                 "x-webkit-airplay": "allow"
                             });
 
