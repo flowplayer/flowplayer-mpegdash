@@ -44,6 +44,19 @@
                 bc,
                 has_bg,
 
+                posterHack = function () {
+                    var posterClass = "is-poster";
+
+                    setTimeout(function () {
+                        common.addClass(root, posterClass);
+                        player.poster = true;
+                        bean.one(videoTag, "play." + engineName, function () {
+                            common.removeClass(root, posterClass);
+                            player.poster = false;
+                        });
+                    }, 0);
+                },
+
                 engine = {
                     engineName: engineName,
 
@@ -81,7 +94,6 @@
                             },
                             dashEvents = dashjs.MediaPlayer.events,
                             autoplay = !!video.autoplay || !!conf.autoplay,
-                            posterClass = "is-poster",
                             livestartpos = -1;
 
                         if (!mediaPlayer) {
@@ -123,11 +135,8 @@
                                             height: videoTag.videoHeight,
                                             url: player.video.src
                                         });
-                                        break;
-                                    case "resume":
-                                        if (player.poster) {
-                                            player.poster = false;
-                                            common.removeClass(root, posterClass);
+                                        if (conf.poster) {
+                                            posterHack();
                                         }
                                         break;
                                     case "seek":
@@ -174,13 +183,7 @@
                             });
 
                             if (conf.poster) {
-                                // engine too late, poster already removed
-                                player.on("stop." + engineName, function () {
-                                    setTimeout(function () {
-                                        player.poster = true;
-                                        common.addClass(root, posterClass);
-                                    }, 0);
-                                });
+                                player.on("stop." + engineName, posterHack);
                             }
                             player.on("error." + engineName, function () {
                                 if (mediaPlayer) {
