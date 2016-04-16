@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/flowplayer/flowplayer-mpegdash",
   "dependencies": {
-    "dashjs": "2.0.0"
+    "dash.js": "git://github.com/Dash-Industry-Forum/dash.js#v2.1.0"
   },
   "peerDependencies": {
     "flowplayer": "^6.0.3"
