@@ -254,7 +254,6 @@
 
                             common.prepend(common.find(".fp-player", root)[0], videoTag);
                             mediaPlayer.initialize(videoTag, video.src, autoplay);
-                            player.engine[engineName] = mediaPlayer;
 
                             // at least some Android requires extra load
                             // https://github.com/flowplayer/flowplayer/issues/910
