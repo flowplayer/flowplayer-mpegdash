@@ -74,7 +74,7 @@ recommendation is:
   resulting from the default `inband` value.
 
 Disclaimer: The above recommendation is based on
-`MP4Box - GPAC version 0.5.2-DEV-rev566-g4c06d0f-master`. Other versions may yield different results
+`MP4Box - GPAC version 0.6.2-DEV-rev261-gb07662c-master`. Other versions may yield different results
 with different consequences. They might also be affected by other members of a transcoding
 toolchain.
 
