@@ -63,6 +63,8 @@ compatibility can be cross-checked in the latest
 *Caveat:* WebM-DASH streams are extremely unlikely to work correctly with dash.js - or any other
 available client library we know about. - Hence historically the name of the plugin Git repository.
 
+Also test streams for conformance in [DASH validator](http://www.dashif.org/conformance.html).
+
 ### GPAC
 
 If [MP4Box](https://gpac.wp.mines-telecom.fr/mp4box/dash/) by
