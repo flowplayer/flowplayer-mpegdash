@@ -81,6 +81,7 @@
                             },
                             dashEvents = dashjs.MediaPlayer.events,
                             autoplay = !!video.autoplay || !!conf.autoplay,
+                            posterClass = "is-poster",
                             livestartpos = -1;
 
                         if (!mediaPlayer) {
@@ -122,6 +123,12 @@
                                             height: videoTag.videoHeight,
                                             url: player.video.src
                                         });
+                                        break;
+                                    case "resume":
+                                        if (player.poster) {
+                                            player.poster = false;
+                                            common.removeClass(root, posterClass);
+                                        }
                                         break;
                                     case "seek":
                                     case "progress":
@@ -167,19 +174,12 @@
                             });
 
                             if (conf.poster) {
-                                var posterHack = function () {
-                                    var posterClass = "is-poster";
-
+                                player.on("stop." + engineName, function () {
                                     setTimeout(function () {
                                         common.addClass(root, posterClass);
                                         player.poster = true;
-                                        bean.one(videoTag, "play." + engineName, function () {
-                                            common.removeClass(root, posterClass);
-                                            player.poster = false;
-                                        });
                                     }, 0);
-                                };
-                                player.one("ready." + engineName, posterHack).on("stop." + engineName, posterHack);
+                                });
                             }
                             player.on("error." + engineName, function () {
                                 if (mediaPlayer) {
