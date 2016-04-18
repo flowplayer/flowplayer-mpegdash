@@ -44,7 +44,7 @@ Features
 --------
 
 - packs a compatibility tested version - current:
-  [v2.1.0](https://github.com/Dash-Industry-Forum/dash.js/releases/tag/v2.1.0) - of
+  [v2.0.0](https://github.com/Dash-Industry-Forum/dash.js/releases/tag/v2.0.0) - of
   [dash.js](https://github.com/Dash-Industry-Forum/dash.js) by the
   [Dash Industry Forum](http://dashif.org/software/)
 - engine is only loaded if the client supports MPEG-DASH, see also the `codecs`
@@ -58,7 +58,7 @@ Stream compatibility
 
 DASH is not a fixed standard yet, but a moving target. As the plugin is based on dash.js stream
 compatibility can be cross-checked in the latest
-[dash.js sample player](http://dashif.org/reference/players/javascript/v2.1.0/samples/dash-if-reference-player/).
+[dash.js sample player](http://dashif.org/reference/players/javascript/v2.0.0/samples/dash-if-reference-player/).
 
 *Caveat:* WebM-DASH streams are extremely unlikely to work correctly with dash.js - or any other
 available client library we know about. - Hence historically the name of the plugin Git repository.
@@ -90,7 +90,7 @@ load the components separately using the latest development build or release fro
 <script src="//releases.flowplayer.org/6.0.5/flowplayer.min.js"></script>
 
 <!-- load dash.js latest release -->
-<!-- <script src="//cdn.dashjs.org/v2.1.0/dash.all.min.js"></script> -->
+<!-- <script src="//cdn.dashjs.org/v2.0.0/dash.all.min.js"></script> -->
 
 <!-- or load dash.js latest dev build -->
 <script src="//cdn.dashjs.org/latest/dash.all.min.js"></script>
@@ -114,7 +114,7 @@ exclusion with a simple page using bare dash.js, like:
 <html>
 <head>
 
-<script src="//cdn.dashjs.org/v2.1.0/dash.all.min.js"></script>
+<script src="//cdn.dashjs.org/v2.0.0/dash.all.min.js"></script>
 
 <script>
 window.onload = function () {
