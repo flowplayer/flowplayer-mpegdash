@@ -174,12 +174,16 @@
                             });
 
                             if (conf.poster) {
-                                player.on("stop." + engineName, function () {
+                                var posterHack = function () {
                                     setTimeout(function () {
-                                        common.addClass(root, posterClass);
-                                        player.poster = true;
+                                        if (!player.poster) {
+                                            common.addClass(root, posterClass);
+                                            player.poster = true;
+                                        }
                                     }, 0);
-                                });
+                                };
+
+                                player.one("ready." + engineName, posterHack).on("stop." + engineName, posterHack);
                             }
                             player.on("error." + engineName, function () {
                                 if (mediaPlayer) {
