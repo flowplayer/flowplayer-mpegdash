@@ -4,10 +4,13 @@ Flowplayer dashjs plugin
 This plugin provides the `dash` [engine](https://flowplayer.org/docs/api.html#engines) for
 playback of [DASH](https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP) streams.
 
+The plugin relies on the [dash.js](https://github.com/Dash-Industry-Forum/dash.js) client, courtesy
+of the [DASH Industry Forum](http://dashif.org/).
+
 Usage
 -----
 
-See: https://flowplayer.org/docs/plugins.html#hlsjs
+See: https://flowplayer.org/docs/plugins.html#dashjs
 
 - [compatibility](https://flowplayer.org/docs/plugins.html#dashjs-compatibility)
 - [loading the assets](https://flowplayer.org/docs/plugins.html#dashjs-assets)
@@ -47,8 +50,8 @@ Features
   [v2.0.0](https://github.com/Dash-Industry-Forum/dash.js/releases/tag/v2.0.0) - of
   [dash.js](https://github.com/Dash-Industry-Forum/dash.js) by the
   [Dash Industry Forum](http://dashif.org/software/)
-- engine is only loaded if the client supports MPEG-DASH, see also the `codecs`
-  [option](#plugin-configuration)
+- engine is only loaded if the client supports DASH in a MediaSource element, see also the `codecs`
+  [option](https://flowplayer.org/docs/plugins.html#dashjs-configuration)
 - also available for Flowplayer version 5.x ([demo](http://demos.flowplayer.org/v5/api/dash.html)) -
   not developed anymore, uses
   [v1.6.0](https://github.com/Dash-Industry-Forum/dash.js/releases/tag/v1.6.0) of dash.js
