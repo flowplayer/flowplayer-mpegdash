@@ -207,6 +207,8 @@
                             Object.keys(dashEvents).forEach(function (key) {
                                 mediaPlayer.on(dashEvents[key], function (e) {
                                     var data = extend({}, e),
+                                        etype = e.type,
+                                        fpEventType = engineName + etype.charAt(0).toUpperCase() + etype.slice(1),
                                         src = player.video.src,
                                         fperr,
                                         errobj;
@@ -252,7 +254,7 @@
                                         break;
                                     }
 
-                                    player.trigger(e.type, [player, data]);
+                                    player.trigger(fpEventType, [player, data]);
                                 });
                             });
 
