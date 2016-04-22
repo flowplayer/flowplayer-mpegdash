@@ -41,6 +41,7 @@
             var bean = flowplayer.bean,
                 mediaPlayer,
                 videoTag,
+                dashListeners = [],
                 bc,
                 has_bg,
 
@@ -205,10 +206,11 @@
                             mediaPlayer.getDebug().setLogToBrowserConsole(!!dashconf.debug);
 
                             Object.keys(dashEvents).forEach(function (key) {
-                                mediaPlayer.on(dashEvents[key], function (e) {
+                                var etype = dashEvents[key],
+                                    fpEventType = engineName + etype.charAt(0).toUpperCase() + etype.slice(1);
+
+                                mediaPlayer.on(etype, function (e) {
                                     var data = extend({}, e),
-                                        etype = e.type,
-                                        fpEventType = engineName + etype.charAt(0).toUpperCase() + etype.slice(1),
                                         src = player.video.src,
                                         fperr,
                                         errobj;
@@ -256,6 +258,8 @@
 
                                     player.trigger(fpEventType, [player, data]);
                                 });
+
+                                dashListeners.push(fpEventType);
                             });
 
                             common.prepend(common.find(".fp-player", root)[0], videoTag);
@@ -304,13 +308,18 @@
 
                     unload: function () {
                         if (mediaPlayer) {
-                            bean.off(root, "." + engineName);
-                            player.off("." + engineName);
+                            dashListeners.push("." + engineName);
+
+                            var listeners = dashListeners.join(" ");
+
+                            bean.off(root, listeners);
+                            player.off(listeners);
                             mediaPlayer.reset();
                             mediaPlayer = 0;
-                            bean.off(videoTag, "." + engineName);
+                            bean.off(videoTag, listeners);
                             common.removeNode(videoTag);
                             videoTag = 0;
+                            delete player.engine[engineName];
                         }
                     }
                 };
