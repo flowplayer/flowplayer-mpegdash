@@ -41,7 +41,6 @@
             var bean = flowplayer.bean,
                 mediaPlayer,
                 videoTag,
-                dashListeners = [],
                 bc,
                 has_bg,
 
@@ -80,7 +79,7 @@
                                 timeupdate: "progress",
                                 volumechange: "volume"
                             },
-                            dashEvents = dashjs.MediaPlayer.events,
+                            DASHEVENTS = dashjs.MediaPlayer.events,
                             autoplay = !!video.autoplay || !!conf.autoplay,
                             posterClass = "is-poster",
                             livestartpos = 0;
@@ -205,9 +204,11 @@
                             mediaPlayer.setScheduleWhilePaused(true);
                             mediaPlayer.getDebug().setLogToBrowserConsole(!!dashconf.debug);
 
-                            Object.keys(dashEvents).forEach(function (key) {
-                                var etype = dashEvents[key],
-                                    fpEventType = engineName + etype.charAt(0).toUpperCase() + etype.slice(1);
+                            Object.keys(DASHEVENTS).forEach(function (key) {
+                                var etype = DASHEVENTS[key],
+                                    fpEventType = engineName + etype.charAt(0).toUpperCase() + etype.slice(1),
+                                    listeners = dashconf.listeners,
+                                    expose = listeners && listeners.indexOf(etype) > -1;
 
                                 mediaPlayer.on(etype, function (e) {
                                     var data = extend({}, e),
@@ -256,10 +257,10 @@
                                         break;
                                     }
 
-                                    player.trigger(fpEventType, [player, data]);
+                                    if (expose) {
+                                        player.trigger(fpEventType, [player, data]);
+                                    }
                                 });
-
-                                dashListeners.push(fpEventType);
                             });
 
                             common.prepend(common.find(".fp-player", root)[0], videoTag);
@@ -308,18 +309,15 @@
 
                     unload: function () {
                         if (mediaPlayer) {
-                            dashListeners.push("." + engineName);
+                            var listeners = "." + engineName;
 
-                            var listeners = dashListeners.join(" ");
-
-                            bean.off(root, listeners);
-                            player.off(listeners);
                             mediaPlayer.reset();
                             mediaPlayer = 0;
+                            player.off(listeners);
+                            bean.off(root, listeners);
                             bean.off(videoTag, listeners);
                             common.removeNode(videoTag);
                             videoTag = 0;
-                            delete player.engine[engineName];
                         }
                     }
                 };
