@@ -19,6 +19,7 @@ v5:
 
 debug:
 	@ mkdir -p $(DIST)
+	@ cp node_modules/js-polyfills/es5.js $(DIST)/
 	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' flowplayer.dashjs.js > $(JS).js
 	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' flowplayer.dashjs-v5.js > $(JS)-v5.js
 

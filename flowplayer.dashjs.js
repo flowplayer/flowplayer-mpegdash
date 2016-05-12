@@ -10,13 +10,15 @@
    Released under the MIT License:
    http://www.opensource.org/licenses/mit-license.php
 
-   Includes dash.all.js:
-   Copyright (c) 2015, Dash Industry Forum. **All rights reserved.
-   https://github.com/Dash-Industry-Forum/dash.js/blob/master/LICENSE.md
+   Includes hls.js
+   Copyright (c) 2015 Dailymotion (http://www.dailymotion.com)
+   https://github.com/dailymotion/hls.js/blob/master/LICENSE
 
-   requires:
-   - Flowplayer HTML5 version 6.x or greater
-   - dash.js https://github.com/Dash-Industry-Forum/dash.js
+   Includes es5.js
+   https://github.com/inexorabletash/polyfill/blob/master/es5.js
+   for compatibility with legacy browsers
+
+   Requires Flowplayer HTML5 version 6.x
    revision: $GIT_ID$
 
 */

@@ -50,6 +50,8 @@ Features
   [v2.1.1](https://github.com/Dash-Industry-Forum/dash.js/releases/tag/v2.1.1) - of
   [dash.js](https://github.com/Dash-Industry-Forum/dash.js) by the
   [Dash Industry Forum](http://dashif.org/software/)
+- packs [es5.js](https://github.com/inexorabletash/polyfill/blob/master/es5.js) for
+  IE8 compatibility
 - engine is only loaded if the client supports DASH in a MediaSource element, see also the `codecs`
   [option](https://flowplayer.org/docs/plugins.html#dashjs-configuration)
 - also available for Flowplayer version 5.x ([demo](http://demos.flowplayer.org/v5/api/dash.html)) -
@@ -91,6 +93,9 @@ load the components separately using the latest development build or release fro
 
 ```html
 <script src="//releases.flowplayer.org/6.0.5/flowplayer.min.js"></script>
+
+<!-- unminified es5.js -->
+<script src="//releases.flowplayer.org/dashjs/es5.js"></script>
 
 <!-- load dash.js latest release -->
 <!-- <script src="//cdn.dashjs.org/v2.1.1/dash.all.min.js"></script> -->
