@@ -23,7 +23,7 @@
 
 (function ($) {
     "use strict";
-    if (!flowplayer.support.video || !window.MediaSource) {
+    if (!flowplayer.support.video || !window.MediaSource || typeof window.MediaSource.isTypeSupported !== "function") {
         return;
     }
 

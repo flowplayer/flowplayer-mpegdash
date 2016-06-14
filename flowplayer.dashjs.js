@@ -339,7 +339,7 @@
             return engine;
         };
 
-    if (mse && version.indexOf("5.") !== 0) {
+    if (mse && typeof mse.isTypeSupported === "function" && version.indexOf("5.") !== 0) {
         // only load engine if it can be used
         engineImpl.engineName = engineName; // must be exposed
         engineImpl.canPlay = function (type, conf) {
