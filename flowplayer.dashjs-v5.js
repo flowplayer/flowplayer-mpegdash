@@ -191,7 +191,7 @@
 
                 mediaPlayer.attachSource(video.src);
 
-                if (!flowplayer.support.zeropreload && (conf.autoplay || video.autoplay)) {
+                if (!flowplayer.support.zeropreload && (player.conf.autoplay || video.autoplay)) {
                     // at least some Android devices require extra load
                     // https://github.com/flowplayer/flowplayer/issues/910
                     videoTag.load();
