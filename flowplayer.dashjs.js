@@ -70,6 +70,7 @@
 
                     load: function (video) {
                         var conf = player.conf,
+                            dashUpdatedConf = extend(dashconf, conf.dash, conf.clip.dash),
                             EVENTS = {
                                 ended: "finish",
                                 loadeddata: "ready",
@@ -198,18 +199,18 @@
                             player.engine[engineName] = mediaPlayer;
 
                             // new ABR algo
-                            mediaPlayer.enableBufferOccupancyABR(!!dashconf.bufferOccupancyABR);
+                            mediaPlayer.enableBufferOccupancyABR(!!dashUpdatedConf.bufferOccupancyABR);
                             // caching can cause failures in playlists
                             // for the moment disable entirely
                             mediaPlayer.enableLastBitrateCaching(false);
                             // for seeking in paused state
                             mediaPlayer.setScheduleWhilePaused(true);
-                            mediaPlayer.getDebug().setLogToBrowserConsole(!!dashconf.debug);
+                            mediaPlayer.getDebug().setLogToBrowserConsole(!!dashUpdatedConf.debug);
 
                             Object.keys(DASHEVENTS).forEach(function (key) {
                                 var etype = DASHEVENTS[key],
                                     fpEventType = engineName + etype.charAt(0).toUpperCase() + etype.slice(1),
-                                    listeners = dashconf.listeners,
+                                    listeners = dashUpdatedConf.listeners,
                                     expose = listeners && listeners.indexOf(etype) > -1;
 
                                 mediaPlayer.on(etype, function (e) {
