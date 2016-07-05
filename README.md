@@ -152,6 +152,16 @@ make
 Known issues
 ------------
 
+- IE8: due to loading the dash.js client library, errors which do not affect functionality are
+  reported in the console (see:
+  [issue #14](https://github.com/flowplayer/flowplayer-mpegdash/issues/14)). Workaround:
+  additionally load jquery and the es5 polyfill **in this order**:
+```html
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="//releases.flowplayer.org/6.0.5/flowplayer.min.js"></script>
+<script src="//releases.flowplayer.org/dashjs/es5.js"></script>
+<script src="//releases.flowplayer.org/dashjs/flowplayer.dashjs.min.js"></script>
+```
 - Android: Until
   [this bug fix](https://chromium.googlesource.com/chromium/src.git/+/0b5ec458acf03e3507a3737cfc483df0694cf803%5E!/)
   has propagated onto devices, streams with High profile AAC audio (`mp4a.40.5`) may not play.
