@@ -14,12 +14,10 @@ v5:
 	@ mkdir -p $(DIST)
 	@ sed -ne 's/\$$GIT_ID\$$/$(GIT_ID)/; /^\/\*!/,/^\*\// p' flowplayer.dashjs-v5.js > $(JS)-v5.min.js
 	@ cat dash.all.js >> $(JS)-v5.min.js
-	@ echo '' >> $(JS)-v5.min.js
 	@ npm run -s mini5 >> $(JS)-v5.min.js
 
 debug:
 	@ mkdir -p $(DIST)
-	@ cp node_modules/js-polyfills/es5.js $(DIST)/
 	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' flowplayer.dashjs.js > $(JS).js
 	@ sed -e 's/\$$GIT_ID\$$/$(GIT_ID)/' flowplayer.dashjs-v5.js > $(JS)-v5.js
 
