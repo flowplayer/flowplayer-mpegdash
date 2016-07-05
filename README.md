@@ -26,7 +26,8 @@ The plugin can be used in a [browserify](http://browserify.org) and/or
 
 ```js
 var flowplayer = require('flowplayer');
-require('flowplayer-dashjs'); // Plugin injects itself to flowplayer
+var engine = require('flowplayer-dashjs');
+engine(flowplayer-dashjs); // plugin injects itself into flowplayer
 
 flowplayer('#container', {
   clip: {

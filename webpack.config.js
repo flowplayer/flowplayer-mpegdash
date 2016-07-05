@@ -30,7 +30,7 @@ lines.forEach(function (line) {
 });
 
 module.exports = {
-  entry: {'flowplayer.dashjs.min': ['./flowplayer.dashjs.js']},
+  entry: {'flowplayer.dashjs.min': ['./standalone.js']},
   externals: {
     flowplayer: 'flowplayer'
   },
