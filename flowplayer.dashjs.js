@@ -129,8 +129,8 @@
                                             break;
                                         case "resume":
                                             if (player.poster) {
-                                                player.poster = false;
                                                 common.removeClass(root, posterClass);
+                                                player.poster = false;
                                             }
                                             break;
                                         case "seek":
@@ -177,13 +177,15 @@
                                 });
 
                                 if (conf.poster) {
-                                    var posterHack = function () {
-                                        setTimeout(function () {
-                                            if (!player.poster) {
-                                                common.addClass(root, posterClass);
-                                                player.poster = true;
-                                            }
-                                        }, 0);
+                                    var posterHack = function (e) {
+                                        if (e.type === "stop" || !autoplay) {
+                                            setTimeout(function () {
+                                                if (!player.poster) {
+                                                    common.addClass(root, posterClass);
+                                                    player.poster = true;
+                                                }
+                                            }, 0);
+                                        }
                                     };
 
                                     player.one("ready." + engineName, posterHack).on("stop." + engineName, posterHack);
