@@ -111,7 +111,8 @@
                                             return;
                                         }
 
-                                        var ct = 0,
+                                        var duration = videoTag.duration,
+                                            ct = 0,
                                             buffer = 0,
                                             buffend = 0,
                                             buffered,
@@ -120,7 +121,9 @@
                                         switch (flow) {
                                         case "ready":
                                             arg = extend(player.video, {
-                                                duration: videoTag.duration,
+                                                duration: duration < Number.MAX_VALUE
+                                                    ? duration
+                                                    : 0,
                                                 seekable: videoTag.seekable.end(null),
                                                 width: videoTag.videoWidth,
                                                 height: videoTag.videoHeight,
