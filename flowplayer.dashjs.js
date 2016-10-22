@@ -29,6 +29,7 @@
             mse = window.MediaSource,
             common = flowplayer.common,
             extend = flowplayer.extend,
+            support = flowplayer.support,
             version = flowplayer.version,
             dashconf,
 
@@ -276,7 +277,7 @@
 
                                 // at least some Android requires extra load
                                 // https://github.com/flowplayer/flowplayer/issues/910
-                                if (autoplay && !flowplayer.support.zeropreload) {
+                                if (!support.zeropreload || !support.dataload) {
                                     videoTag.load();
                                 }
 
