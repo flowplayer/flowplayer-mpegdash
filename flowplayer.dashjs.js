@@ -171,7 +171,7 @@
                                                 }
                                             } catch (ignore) {}
                                             video.buffer = buffer;
-                                            arg = e;
+                                            arg = buffer;
                                             break;
                                         }
 
