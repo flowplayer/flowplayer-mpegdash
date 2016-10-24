@@ -29,7 +29,6 @@
             mse = window.MediaSource,
             common = flowplayer.common,
             extend = flowplayer.extend,
-            support = flowplayer.support,
             version = flowplayer.version,
             dashconf,
 
@@ -275,12 +274,6 @@
                                 common.prepend(common.find(".fp-player", root)[0], videoTag);
                                 mediaPlayer.initialize(videoTag, video.src, autoplay);
 
-                                // at least some Android requires extra load
-                                // https://github.com/flowplayer/flowplayer/issues/910
-                                if (!support.zeropreload || !support.dataload) {
-                                    videoTag.load();
-                                }
-
                             } else {
                                 if ((player.video.src && video.src !== player.video.src) || video.index) {
                                     mediaPlayer.setAutoPlay(true);
@@ -291,6 +284,10 @@
 
                             // update video object before ready
                             player.video = video;
+
+                            if (videoTag.paused && autoplay) {
+                                videoTag.play();
+                            }
                         },
 
                         resume: function () {
