@@ -112,7 +112,7 @@
                                         }
 
                                         var duration = videoTag.duration,
-                                            ct = 0,
+                                            ct = videoTag.currentTime,
                                             buffer = 0,
                                             buffend = 0,
                                             buffered,
@@ -137,12 +137,13 @@
                                             }
                                             break;
                                         case "seek":
+                                            arg = ct;
+                                            break;
                                         case "progress":
-                                            ct = videoTag.currentTime;
-                                            if (player.video.live && !livestartpos && ct > 0) {
+                                            if (player.live && !livestartpos && ct > 0) {
                                                 livestartpos = ct;
                                             }
-                                            arg = !player.video.live
+                                            arg = !player.live
                                                 ? ct
                                                 : livestartpos
                                                     ? ct - livestartpos
@@ -156,7 +157,6 @@
                                             break;
                                         case "buffer":
                                             try {
-                                                ct = videoTag.currentTime;
                                                 // cycle through time ranges to obtain buffer
                                                 // nearest current time
                                                 if (ct) {
