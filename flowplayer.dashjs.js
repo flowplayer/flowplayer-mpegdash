@@ -205,13 +205,13 @@
                                 player.engine[engineName] = mediaPlayer;
 
                                 // new ABR algo
-                                mediaPlayer.enableBufferOccupancyABR(!!dashUpdatedConf.bufferOccupancyABR);
+                                mediaPlayer.enableBufferOccupancyABR(dashUpdatedConf.bufferOccupancyABR);
                                 // caching can cause failures in playlists
                                 // for the moment disable entirely
                                 mediaPlayer.enableLastBitrateCaching(false);
                                 // for seeking in paused state
                                 mediaPlayer.setScheduleWhilePaused(true);
-                                mediaPlayer.getDebug().setLogToBrowserConsole(!!dashUpdatedConf.debug);
+                                mediaPlayer.getDebug().setLogToBrowserConsole(dashUpdatedConf.debug);
 
                                 Object.keys(DASHEVENTS).forEach(function (key) {
                                     var etype = DASHEVENTS[key],
