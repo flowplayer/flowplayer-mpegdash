@@ -19,7 +19,7 @@
    for compatibility with legacy browsers
 
    Requires Flowplayer HTML5 version 6.x
-   revision: $GIT_ID$
+   $GIT_DESC$
 
 */
 (function () {

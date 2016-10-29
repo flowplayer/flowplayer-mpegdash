@@ -17,7 +17,7 @@
    requires:
    - Flowplayer HTML5 version 5.x
    - dash.js https://github.com/Dash-Industry-Forum/dash.js
-   revision: $GIT_ID$
+   $GIT_DESC$
 
 */
 
