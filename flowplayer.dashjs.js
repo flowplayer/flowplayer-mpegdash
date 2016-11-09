@@ -112,8 +112,7 @@
                                             return;
                                         }
 
-                                        var duration = videoTag.duration,
-                                            ct = videoTag.currentTime,
+                                        var ct = videoTag.currentTime,
                                             buffer = 0,
                                             buffend = 0,
                                             buffered,
@@ -122,9 +121,7 @@
                                         switch (flow) {
                                         case "ready":
                                             arg = extend(player.video, {
-                                                duration: duration < Number.MAX_VALUE
-                                                    ? duration
-                                                    : 0,
+                                                duration: mediaPlayer.duration(),
                                                 seekable: videoTag.seekable.end(null),
                                                 width: videoTag.videoWidth,
                                                 height: videoTag.videoHeight,
@@ -138,7 +135,7 @@
                                             }
                                             break;
                                         case "seek":
-                                            arg = ct;
+                                            arg = mediaPlayer.time();
                                             break;
                                         case "progress":
                                             if (player.live && !livestartpos && ct > 0) {
@@ -188,7 +185,7 @@
                                                     common.addClass(root, posterClass);
                                                     player.poster = true;
                                                 }
-                                            }, 0);
+                                            });
                                         }
                                     };
 
@@ -286,21 +283,31 @@
                             // update video object before ready
                             player.video = video;
 
+                            // devices not allowing autoplay:
+                            // detect videoTag.paused and nudge videoTag
+                            // to avoid complaint about lacking user gesture
+                            // before initializing dashjs playback
                             if (videoTag.paused && autoplay) {
-                                videoTag.play();
+                                if (flowplayer.support.firstframe) {
+                                    mediaPlayer.play();
+                                } else {
+                                    videoTag.play();
+                                    videoTag.pause();
+                                    mediaPlayer.play();
+                                }
                             }
                         },
 
                         resume: function () {
-                            videoTag.play();
+                            mediaPlayer.play();
                         },
 
                         pause: function () {
-                            videoTag.pause();
+                            mediaPlayer.pause();
                         },
 
                         seek: function (time) {
-                            videoTag.currentTime = time;
+                            mediaPlayer.seek(time);
                         },
 
                         volume: function (level) {
