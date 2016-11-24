@@ -26,7 +26,7 @@
     "use strict";
     var extension = function (dashjs, flowplayer) {
         var engineName = "dash",
-            mse = window.MediaSource,
+            mse = window.MediaSource || window.WebKitMediaSource,
             common = flowplayer.common,
             extend = flowplayer.extend,
             version = flowplayer.version,

@@ -23,7 +23,9 @@
 
 (function ($) {
     "use strict";
-    if (!flowplayer.support.video || !window.MediaSource || typeof window.MediaSource.isTypeSupported !== "function") {
+    var mse = window.MediaSource || window.WebKitMediaSource;
+
+    if (!flowplayer.support.video || !mse || typeof mse !== "function") {
         return;
     }
 
