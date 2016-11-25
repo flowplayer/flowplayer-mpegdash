@@ -1,6 +1,6 @@
 {
   "name": "flowplayer-dashjs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Flowplayer dashjs plugin",
   "main": "flowplayer.dashjs.js",
   "scripts": {
