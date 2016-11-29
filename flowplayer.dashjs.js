@@ -30,6 +30,7 @@
             common = flowplayer.common,
             extend = flowplayer.extend,
             version = flowplayer.version,
+            coreV6 = version.indexOf("6.") === 0,
             dashconf,
 
             dashCanPlay = function (sourceType, dashType, dashCodecs) {
@@ -129,7 +130,7 @@
                                             });
                                             break;
                                         case "resume":
-                                            if (player.poster) {
+                                            if (coreV6 && player.poster) {
                                                 common.removeClass(root, posterClass);
                                                 player.poster = false;
                                             }
@@ -177,7 +178,7 @@
                                     });
                                 });
 
-                                if (conf.poster) {
+                                if (coreV6 && conf.poster) {
                                     var posterHack = function (e) {
                                         if (e.type === "stop" || !autoplay) {
                                             setTimeout(function () {
