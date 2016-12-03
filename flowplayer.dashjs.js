@@ -215,7 +215,7 @@
                                     var etype = DASHEVENTS[key],
                                         fpEventType = engineName + etype.charAt(0).toUpperCase() + etype.slice(1),
                                         listeners = dashUpdatedConf.listeners,
-                                        expose = listeners && listeners.indexOf(etype) > -1;
+                                        expose = listeners && listeners.indexOf(fpEventType) > -1;
 
                                     mediaPlayer.on(etype, function (e) {
                                         var data = extend({}, e),
