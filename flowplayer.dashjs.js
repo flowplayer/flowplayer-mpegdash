@@ -5,7 +5,7 @@
 
    MPEG-DASH engine plugin for Flowplayer HTML5
 
-   Copyright (c) 2015-2016, Flowplayer Oy
+   Copyright (c) 2015-2016, Flowplayer Drive Oy
 
    Released under the MIT License:
    http://www.opensource.org/licenses/mit-license.php
@@ -13,10 +13,6 @@
    Includes hls.js
    Copyright (c) 2015 Dailymotion (http://www.dailymotion.com)
    https://github.com/dailymotion/hls.js/blob/master/LICENSE
-
-   Includes es5.js
-   https://github.com/inexorabletash/polyfill/blob/master/es5.js
-   for compatibility with legacy browsers
 
    Requires Flowplayer HTML5 version 6.x
    $GIT_DESC$
