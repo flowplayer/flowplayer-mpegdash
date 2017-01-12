@@ -81,8 +81,7 @@
                                 },
                                 DASHEVENTS = dashjs.MediaPlayer.events,
                                 autoplay = !!video.autoplay || !!conf.autoplay,
-                                posterClass = "is-poster",
-                                livestartpos = 0;
+                                posterClass = "is-poster";
 
                             if (!mediaPlayer) {
                                 videoTag = common.findDirect("video", root)[0]
@@ -118,8 +117,7 @@
                                             console.log(type, "->", flow, e.originalEvent);
                                         }
 
-                                        var ct = videoTag.currentTime,
-                                            mct = mediaPlayer.time(),
+                                        var ct = (mediaPlayer.time && mediaPlayer.time()) || videoTag.currentTime,
                                             buffer = 0,
                                             buffend = 0,
                                             buffered,
@@ -142,17 +140,8 @@
                                             }
                                             break;
                                         case "seek":
-                                            arg = mct;
-                                            break;
                                         case "progress":
-                                            if (player.live && !player.dvr && !livestartpos && ct > 0) {
-                                                livestartpos = ct;
-                                            }
-                                            arg = (player.dvr || !player.live)
-                                                ? mct
-                                                : livestartpos
-                                                    ? ct - livestartpos
-                                                    : 0;
+                                            arg = ct;
                                             break;
                                         case "speed":
                                             arg = videoTag.playbackRate;
@@ -164,12 +153,12 @@
                                             try {
                                                 // cycle through time ranges to obtain buffer
                                                 // nearest current time
-                                                if (mct) {
+                                                if (ct) {
                                                     buffered = videoTag.buffered;
                                                     for (i = buffered.length - 1; i > -1; i -= 1) {
                                                         buffend = buffered.end(i);
 
-                                                        if (buffend >= mct) {
+                                                        if (buffend >= ct) {
                                                             buffer = buffend;
                                                         }
                                                     }
