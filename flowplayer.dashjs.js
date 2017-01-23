@@ -118,16 +118,17 @@
                                         }
 
                                         var ct = (mediaPlayer.time && mediaPlayer.time()) || videoTag.currentTime,
+                                            seekable = videoTag.seekable,
+                                            buffered = videoTag.buffered,
                                             buffer = 0,
                                             buffend = 0,
-                                            buffered,
                                             i;
 
                                         switch (flow) {
                                         case "ready":
                                             arg = extend(player.video, {
                                                 duration: mediaPlayer.duration(),
-                                                seekable: videoTag.seekable.end(null),
+                                                seekable: seekable.length && seekable.end(null),
                                                 width: videoTag.videoWidth,
                                                 height: videoTag.videoHeight,
                                                 url: player.video.src
@@ -151,10 +152,10 @@
                                             break;
                                         case "buffer":
                                             try {
-                                                // cycle through time ranges to obtain buffer
-                                                // nearest current time
-                                                if (ct) {
-                                                    buffered = videoTag.buffered;
+                                                buffer = buffered.length && buffered.end(null);
+                                                if (!player.video.live && ct && buffer) {
+                                                    // cycle through time ranges to obtain buffer
+                                                    // nearest current time
                                                     for (i = buffered.length - 1; i > -1; i -= 1) {
                                                         buffend = buffered.end(i);
 
