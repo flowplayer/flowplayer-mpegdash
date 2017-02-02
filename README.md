@@ -91,7 +91,7 @@ A quick way to find out whether the currently packed version of dash.js is causi
 load the components separately using the latest development build or release from the dash.js CDN:
 
 ```html
-<script src="//releases.flowplayer.org/6.0.5/flowplayer.min.js"></script>
+<script src="//releases.flowplayer.org/7.0.1/flowplayer.min.js"></script>
 
 <!-- load dash.js latest release -->
 <!-- <script src="//cdn.dashjs.org/v2.4.1/dash.all.min.js"></script> -->
