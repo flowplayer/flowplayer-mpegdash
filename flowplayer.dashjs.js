@@ -81,7 +81,8 @@
                                 },
                                 DASHEVENTS = dashjs.MediaPlayer.events,
                                 autoplay = !!video.autoplay || !!conf.autoplay,
-                                posterClass = "is-poster";
+                                posterClass = "is-poster",
+                                livestartpos = 0;
 
                             if (!mediaPlayer) {
                                 videoTag = common.findDirect("video", root)[0]
@@ -117,7 +118,8 @@
                                             console.log(type, "->", flow, e.originalEvent);
                                         }
 
-                                        var ct = (mediaPlayer.time && mediaPlayer.time()) || videoTag.currentTime,
+                                        var vct = videoTag.currentTime,
+                                            ct = (mediaPlayer.time && mediaPlayer.time()) || vct,
                                             seekable = videoTag.seekable,
                                             buffered = videoTag.buffered,
                                             buffer = 0,
@@ -141,8 +143,19 @@
                                             }
                                             break;
                                         case "seek":
-                                        case "progress":
                                             arg = ct;
+                                            break;
+                                        case "progress":
+                                            if (player.live && !player.dvr) {
+                                                if (!livestartpos && vct) {
+                                                    livestartpos = vct;
+                                                }
+                                                arg = livestartpos
+                                                    ? vct - livestartpos
+                                                    : 0;
+                                            } else {
+                                                arg = ct;
+                                            }
                                             break;
                                         case "speed":
                                             arg = videoTag.playbackRate;
