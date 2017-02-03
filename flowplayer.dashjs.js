@@ -328,7 +328,6 @@
 
                         speed: function (val) {
                             videoTag.playbackRate = val;
-                            player.trigger('speed', [player, val]);
                         },
 
                         unload: function () {
