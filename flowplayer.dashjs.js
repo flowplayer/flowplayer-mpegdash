@@ -158,6 +158,14 @@
                                             }
                                             break;
                                         case "speed":
+                                            // dash.js often triggers playback rate changes
+                                            // when adapting bit rate
+                                            // except when in debug mode, only
+                                            // trigger explicit events via speed method
+                                            if (!dashUpdatedConf.debug) {
+                                                e.preventDefault();
+                                                return;
+                                            }
                                             arg = videoTag.playbackRate;
                                             break;
                                         case "volume":
@@ -328,6 +336,8 @@
 
                         speed: function (val) {
                             videoTag.playbackRate = val;
+                            // see ratechange/speed event
+                            player.trigger('speed', [player, val]);
                         },
 
                         unload: function () {
