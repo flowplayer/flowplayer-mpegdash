@@ -301,18 +301,8 @@
                             // update video object before ready
                             player.video = video;
 
-                            // devices not allowing autoplay:
-                            // detect videoTag.paused and nudge videoTag
-                            // to avoid complaint about lacking user gesture
-                            // before initializing dashjs playback
                             if (videoTag.paused && autoplay) {
-                                if (flowplayer.support.firstframe) {
-                                    mediaPlayer.play();
-                                } else {
-                                    videoTag.play();
-                                    videoTag.pause();
-                                    mediaPlayer.play();
-                                }
+                                videoTag.play();
                             }
                         },
 
