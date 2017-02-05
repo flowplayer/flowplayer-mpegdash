@@ -38,6 +38,7 @@
 
             engineImpl = function dashjsEngine(player, root) {
                 var bean = flowplayer.bean,
+                    support = flowplayer.support,
                     mediaPlayer,
                     videoTag,
                     handleError = function (errorCode, src, url) {
@@ -54,6 +55,101 @@
                             mediaPlayer = 0;
                         }
                         return errobj;
+                    },
+
+                    lastSelectedQuality = -1,
+                    initQualitySelection = function (dashQualitiesConf, data) {
+                        // multiperiod not supported
+                        if (!dashQualitiesConf || !support.inlineVideo ||
+                                data.Period_asArray.length > 1 ||
+                                (support.browser.safari && !dashconf.qualitiesForSafari)) {
+                            return;
+                        }
+
+                        var vsets = [],
+                            bandwidths = [],
+                            qualities = [],
+                            qIndices = [];
+
+                        data.Period_asArray[0].AdaptationSet_asArray.forEach(function (aset) {
+                            if (aset.par) {
+                                aset.Representation_asArray.forEach(function (repr) {
+                                    var codecs = repr.mimeType + ";codecs=" + repr.codecs;
+
+                                    if (mse.isTypeSupported(codecs)) {
+                                        bandwidths.push(repr.bandwidth);
+                                        vsets.push({
+                                            bandwidth: repr.bandwidth,
+                                            height: repr.height,
+                                            width: repr.width
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                        if (bandwidths.length < 2) {
+                            return;
+                        }
+                        bandwidths.sort(function (a, b) {
+                            return a - b;
+                        });
+
+                        if (dashQualitiesConf !== true) {
+                            if (typeof dashQualitiesConf === "string") {
+                                dashQualitiesConf.split(/\s*,\s*/).forEach(function (q) {
+                                    qIndices.push(parseInt(q, 10));
+                                });
+                            } else if (typeof dashQualitiesConf !== "boolean") {
+                                dashQualitiesConf.forEach(function (q) {
+                                    qIndices.push(isNaN(Number(q))
+                                        ? q.level
+                                        : q);
+                                });
+                            }
+                        }
+                        bandwidths.forEach(function (bw) {
+                            var levelIndex = 0;
+
+                            vsets.forEach(function (vset) {
+                                if (bw === vset.bandwidth &&
+                                        (dashQualitiesConf === true || qIndices.indexOf(levelIndex) > -1)) {
+                                    qualities.push(levelIndex);
+                                }
+                                levelIndex += 1;
+                            });
+                        });
+                        if (qualities.length < 2) {
+                            return;
+                        }
+
+                        if (dashQualitiesConf === true || qIndices.indexOf(-1) > -1) {
+                            qualities.unshift(-1);
+                            bandwidths.unshift(0);
+                        }
+
+                        player.video.qualities = [];
+                        qualities.forEach(function (idx) {
+                            var level = vsets[idx],
+                                q = qIndices.length
+                                    ? dashQualitiesConf[qIndices.indexOf(idx)]
+                                    : idx,
+                                label = q.label || (idx < 0
+                                    ? "Auto"
+                                    : level.width + "x" + level.height +
+                                            " (" + Math.round(level.bandwidth / 1000) + "k)");
+
+                            player.video.qualities.push({value: idx, label: label});
+                        });
+
+                        if (qualities.indexOf(lastSelectedQuality) > -1) {
+                            mediaPlayer.setAutoSwitchQualityFor("video", lastSelectedQuality < 0);
+                            if (lastSelectedQuality > -1) {
+                                mediaPlayer.setInitialBitrateFor("video", Math.round(bandwidths[lastSelectedQuality] / 1000));
+                            }
+                            player.video.quality = lastSelectedQuality;
+                        } else {
+                            player.video.quality = -1;
+                        }
                     },
 
                     bc,
@@ -84,6 +180,7 @@
                         load: function (video) {
                             var conf = player.conf,
                                 dashUpdatedConf = extend(dashconf, conf.dash, video.dash),
+                                dashQualitiesConf = video.dashQualities || conf.dashQualities,
                                 EVENTS = {
                                     ended: "finish",
                                     loadeddata: "ready",
@@ -100,6 +197,12 @@
                                 autoplay = !!video.autoplay || !!conf.autoplay,
                                 posterClass = "is-poster",
                                 livestartpos = 0;
+
+                            if (video.dashQualities === false || coreV6) {
+                                dashQualitiesConf = false;
+                            } else if (dashQualitiesConf === undefined) {
+                                dashQualitiesConf = true;
+                            }
 
                             if (!mediaPlayer) {
                                 videoTag = common.findDirect("video", root)[0]
@@ -217,7 +320,17 @@
                                     });
                                 });
 
-                                if (coreV6 && conf.poster) {
+
+                                if (!coreV6) {
+                                    player.on("quality." + engineName, function (e, api, q) {
+                                        mediaPlayer.setAutoSwitchQualityFor("video", q < 0);
+                                        if (q > -1) {
+                                            mediaPlayer.setQualityFor("video", q);
+                                        }
+                                        lastSelectedQuality = q;
+                                    });
+
+                                } else if (conf.poster) {
                                     var posterHack = function (e) {
                                         if (e.type === "stop" || !autoplay) {
                                             setTimeout(function () {
@@ -256,6 +369,9 @@
                                             errobj;
 
                                         switch (key) {
+                                        case "MANIFEST_LOADED":
+                                            initQualitySelection(dashQualitiesConf, e.data);
+                                            break;
                                         case "ERROR":
                                             switch (e.error) {
                                             case "download":
@@ -307,7 +423,7 @@
                             player.video = video;
 
                             if (player.paused && autoplay) {
-                                if (flowplayer.support.firstframe) {
+                                if (support.firstframe) {
                                     mediaPlayer.play();
                                 } else {
                                     videoTag.play();
@@ -383,7 +499,8 @@
                 // inject dash conf at earliest opportunity
                 dashconf = extend({
                     type: "video/mp4",
-                    codecs: "avc1.42c01e,mp4a.40.2"
+                    codecs: "avc1.42c01e,mp4a.40.2",
+                    qualitiesForSafari: true
                 }, conf[engineName], conf.clip[engineName]);
 
                 return dashCanPlay(type, dashconf.type, dashconf.codecs);
