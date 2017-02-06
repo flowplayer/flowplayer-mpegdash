@@ -291,9 +291,7 @@
                                 mediaPlayer.initialize(videoTag, video.src, autoplay);
 
                             } else {
-                                if ((player.video.src && video.src !== player.video.src) || video.index) {
-                                    mediaPlayer.setAutoPlay(true);
-                                }
+                                mediaPlayer.setAutoPlay(autoplay);
                                 mediaPlayer.attachSource(video.src);
 
                             }
