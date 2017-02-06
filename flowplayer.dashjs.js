@@ -235,15 +235,13 @@
                                         expose = listeners && listeners.indexOf(fpEventType) > -1;
 
                                     mediaPlayer.on(etype, function (e) {
-                                        var data = extend({}, e),
-                                            src = player.video.src,
+                                        var src = player.video.src,
                                             fperr,
                                             errobj;
 
-                                        delete data.type;
                                         switch (key) {
                                         case "ERROR":
-                                            switch (data.error) {
+                                            switch (e.error) {
                                             case "download":
                                                 fperr = 4;
                                                 break;
@@ -272,7 +270,7 @@
                                                 if (fperr > 2) {
                                                     errobj.video = extend(video, {
                                                         src: src,
-                                                        url: data.event.url || src
+                                                        url: e.event.url || src
                                                     });
                                                 }
                                                 player.trigger('error', [player, errobj]);
@@ -282,7 +280,7 @@
                                         }
 
                                         if (expose) {
-                                            player.trigger(fpEventType, [player, data]);
+                                            player.trigger(fpEventType, [player, e]);
                                         }
                                     });
                                 });
