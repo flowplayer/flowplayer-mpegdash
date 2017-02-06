@@ -301,8 +301,12 @@
                             // update video object before ready
                             player.video = video;
 
-                            if (videoTag.paused && autoplay) {
-                                videoTag.play();
+                            if (player.paused && autoplay) {
+                                if (flowplayer.support.firstframe) {
+                                    mediaPlayer.play();
+                                } else {
+                                    videoTag.play();
+                                }
                             }
                         },
 
