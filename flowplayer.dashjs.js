@@ -67,7 +67,7 @@
 
                         load: function (video) {
                             var conf = player.conf,
-                                dashUpdatedConf = extend(dashconf, conf.dash, conf.clip.dash),
+                                dashUpdatedConf = extend(dashconf, conf.dash, video.dash),
                                 EVENTS = {
                                     ended: "finish",
                                     loadeddata: "ready",
@@ -379,7 +379,7 @@
                 dashconf = extend({
                     type: "video/mp4",
                     codecs: "avc1.42c01e,mp4a.40.2"
-                }, flowplayer.conf[engineName], conf[engineName], conf.clip[engineName]);
+                }, conf[engineName], conf.clip[engineName]);
 
                 return dashCanPlay(type, dashconf.type, dashconf.codecs);
             };
