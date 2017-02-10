@@ -40,6 +40,22 @@
                 var bean = flowplayer.bean,
                     mediaPlayer,
                     videoTag,
+                    handleError = function (errorCode, src, url) {
+                        var errobj = {code: errorCode};
+
+                        if (errorCode > 2) {
+                            errobj.video = extend(player.video, {
+                                src: src,
+                                url: url || src
+                            });
+                        }
+                        if (mediaPlayer) {
+                            mediaPlayer.reset();
+                            mediaPlayer = 0;
+                        }
+                        return errobj;
+                    },
+
                     bc,
                     has_bg,
 
@@ -77,7 +93,8 @@
                                     ratechange: "speed",
                                     seeked: "seek",
                                     timeupdate: "progress",
-                                    volumechange: "volume"
+                                    volumechange: "volume",
+                                    error: "error"
                                 },
                                 DASHEVENTS = dashjs.MediaPlayer.events,
                                 autoplay = !!video.autoplay || !!conf.autoplay,
@@ -124,6 +141,7 @@
                                             buffered = videoTag.buffered,
                                             buffer = 0,
                                             buffend = 0,
+                                            errorCode,
                                             i;
 
                                         switch (flow) {
@@ -189,6 +207,10 @@
                                             video.buffer = buffer;
                                             arg = buffer;
                                             break;
+                                        case "error":
+                                            errorCode = videoTag.error && videoTag.error.code;
+                                            arg = handleError(errorCode, player.video.src);
+                                            break;
                                         }
 
                                         player.trigger(flow, [player, arg]);
@@ -209,12 +231,6 @@
 
                                     player.one("ready." + engineName, posterHack).on("stop." + engineName, posterHack);
                                 }
-                                player.on("error." + engineName, function () {
-                                    if (mediaPlayer) {
-                                        mediaPlayer.reset();
-                                        mediaPlayer = 0;
-                                    }
-                                });
 
                                 mediaPlayer = dashjs.MediaPlayer().create();
                                 player.engine[engineName] = mediaPlayer;
@@ -264,18 +280,11 @@
                                                     break;
                                                 }
                                                 break;
+                                            default:
+                                                fperr = 5;
                                             }
-                                            if (fperr) {
-                                                errobj = {code: fperr};
-                                                if (fperr > 2) {
-                                                    errobj.video = extend(video, {
-                                                        src: src,
-                                                        url: e.event.url || src
-                                                    });
-                                                }
-                                                player.trigger('error', [player, errobj]);
-                                                return;
-                                            }
+                                            errobj = handleError(fperr, src, e.event.url);
+                                            player.trigger('error', [player, errobj]);
                                             break;
                                         }
 
