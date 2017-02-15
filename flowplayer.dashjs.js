@@ -50,10 +50,6 @@
                                 url: url || src
                             });
                         }
-                        if (mediaPlayer) {
-                            mediaPlayer.reset();
-                            mediaPlayer = 0;
-                        }
                         return errobj;
                     },
 
@@ -320,6 +316,11 @@
                                     });
                                 });
 
+                                player.on("error." + engineName, function () {
+                                    if (mediaPlayer) {
+                                        player.engine.unload();
+                                    }
+                                });
 
                                 if (!coreV6) {
                                     player.on("quality." + engineName, function (e, api, q) {
