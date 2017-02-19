@@ -346,79 +346,78 @@
                                     player.one("ready." + engineName, posterHack).on("stop." + engineName, posterHack);
                                 }
 
-                                mediaPlayer = dashjs.MediaPlayer().create();
-                                player.engine[engineName] = mediaPlayer;
-
-                                // new ABR algo
-                                mediaPlayer.enableBufferOccupancyABR(dashUpdatedConf.bufferOccupancyABR);
-                                // caching can cause failures in playlists
-                                // for the moment disable entirely
-                                mediaPlayer.enableLastBitrateCaching(false);
-                                // for seeking in paused state
-                                mediaPlayer.setScheduleWhilePaused(true);
-                                mediaPlayer.getDebug().setLogToBrowserConsole(dashUpdatedConf.debug);
-
-                                Object.keys(DASHEVENTS).forEach(function (key) {
-                                    var etype = DASHEVENTS[key],
-                                        fpEventType = engineName + etype.charAt(0).toUpperCase() + etype.slice(1),
-                                        listeners = dashUpdatedConf.listeners,
-                                        expose = listeners && listeners.indexOf(fpEventType) > -1;
-
-                                    mediaPlayer.on(etype, function (e) {
-                                        var src = player.video.src,
-                                            fperr,
-                                            errobj;
-
-                                        switch (key) {
-                                        case "MANIFEST_LOADED":
-                                            initQualitySelection(dashQualitiesConf, e.data);
-                                            break;
-                                        case "ERROR":
-                                            switch (e.error) {
-                                            case "download":
-                                                fperr = 4;
-                                                break;
-                                            case "manifestError":
-                                                fperr = 5;
-                                                break;
-                                            case "mediasource":
-                                                switch (e.event) {
-                                                case "MEDIA_ERR_DECODE":
-                                                    fperr = 3;
-                                                    break;
-                                                case "MEDIA_ERR_SRC_NOT_SUPPORTED":
-                                                    fperr = 5;
-                                                    break;
-                                                case "MEDIA_ERR_NETWORK":
-                                                    fperr = 2;
-                                                    break;
-                                                case "MEDIA_ERR_ABORTED":
-                                                    fperr = 1;
-                                                    break;
-                                                }
-                                                break;
-                                            default:
-                                                fperr = 5;
-                                            }
-                                            errobj = handleError(fperr, src, e.event.url);
-                                            player.trigger('error', [player, errobj]);
-                                            break;
-                                        }
-
-                                        if (expose) {
-                                            player.trigger(fpEventType, [player, e]);
-                                        }
-                                    });
-                                });
-
                                 common.prepend(common.find(".fp-player", root)[0], videoTag);
-                                mediaPlayer.initialize(videoTag, video.src, autoplay);
 
                             } else {
-                                mediaPlayer.setAutoPlay(autoplay);
-                                mediaPlayer.attachSource(video.src);
-
+                                mediaPlayer.reset();
                             }
+
+                            mediaPlayer = dashjs.MediaPlayer().create();
+                            player.engine[engineName] = mediaPlayer;
+
+                            // new ABR algo
+                            mediaPlayer.enableBufferOccupancyABR(dashUpdatedConf.bufferOccupancyABR);
+                            // caching can cause failures in playlists
+                            // for the moment disable entirely
+                            mediaPlayer.enableLastBitrateCaching(false);
+                            // for seeking in paused state
+                            mediaPlayer.setScheduleWhilePaused(true);
+                            mediaPlayer.getDebug().setLogToBrowserConsole(dashUpdatedConf.debug);
+
+                            Object.keys(DASHEVENTS).forEach(function (key) {
+                                var etype = DASHEVENTS[key],
+                                    fpEventType = engineName + etype.charAt(0).toUpperCase() + etype.slice(1),
+                                    listeners = dashUpdatedConf.listeners,
+                                    expose = listeners && listeners.indexOf(fpEventType) > -1;
+
+                                mediaPlayer.on(etype, function (e) {
+                                    var src = player.video.src,
+                                        fperr,
+                                        errobj;
+
+                                    switch (key) {
+                                    case "MANIFEST_LOADED":
+                                        initQualitySelection(dashQualitiesConf, e.data);
+                                        break;
+                                    case "ERROR":
+                                        switch (e.error) {
+                                        case "download":
+                                            fperr = 4;
+                                            break;
+                                        case "manifestError":
+                                            fperr = 5;
+                                            break;
+                                        case "mediasource":
+                                            switch (e.event) {
+                                            case "MEDIA_ERR_DECODE":
+                                                fperr = 3;
+                                                break;
+                                            case "MEDIA_ERR_SRC_NOT_SUPPORTED":
+                                                fperr = 5;
+                                                break;
+                                            case "MEDIA_ERR_NETWORK":
+                                                fperr = 2;
+                                                break;
+                                            case "MEDIA_ERR_ABORTED":
+                                                fperr = 1;
+                                                break;
+                                            }
+                                            break;
+                                        default:
+                                            fperr = 5;
+                                        }
+                                        errobj = handleError(fperr, src, e.event.url);
+                                        player.trigger('error', [player, errobj]);
+                                        break;
+                                    }
+
+                                    if (expose) {
+                                        player.trigger(fpEventType, [player, e]);
+                                    }
+                                });
+                            });
+
+                            mediaPlayer.initialize(videoTag, video.src, autoplay);
 
                             // update video object before ready
                             player.video = video;
