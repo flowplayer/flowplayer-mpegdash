@@ -381,6 +381,9 @@
 
                                     switch (key) {
                                     case "MANIFEST_LOADED":
+                                        if (videoDashConf && videoDashConf.protectionLevel) {
+                                            mediaPlayer.getProtectionController().setRobustnessLevel(videoDashConf.protectionLevel);
+                                        }
                                         initQualitySelection(dashQualitiesConf, e.data);
                                         break;
                                     case "ERROR":
