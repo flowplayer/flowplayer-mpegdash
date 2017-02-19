@@ -355,6 +355,9 @@
                             mediaPlayer = dashjs.MediaPlayer().create();
                             player.engine[engineName] = mediaPlayer;
 
+                            if (video.dash && video.dash.protection) {
+                                mediaPlayer.setProtectionData(video.dash.protection);
+                            }
                             // new ABR algo
                             mediaPlayer.enableBufferOccupancyABR(dashUpdatedConf.bufferOccupancyABR);
                             // caching can cause failures in playlists
@@ -372,6 +375,7 @@
 
                                 mediaPlayer.on(etype, function (e) {
                                     var src = player.video.src,
+                                        videoDashConf = player.video.dash,
                                         fperr,
                                         errobj;
 
@@ -385,6 +389,9 @@
                                             fperr = 4;
                                             break;
                                         case "manifestError":
+                                            if (videoDashConf && videoDashConf.protection) {
+                                                return;
+                                            }
                                             fperr = 5;
                                             break;
                                         case "mediasource":
