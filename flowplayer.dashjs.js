@@ -147,6 +147,7 @@
                             player.video.quality = -1;
                         }
                     },
+                    keySystem,
 
                     bc,
                     has_bg,
@@ -386,6 +387,16 @@
                                         }
                                         initQualitySelection(dashQualitiesConf, e.data);
                                         break;
+                                    case "KEY_SYSTEM_SELECTED":
+                                        keySystem = e.data.keySystem.systemString;
+                                        break;
+                                    case "FRAGMENT_LOADING_COMPLETED":
+                                        if (videoDashConf && videoDashConf.protection && !keySystem) {
+                                            player.conf.errors[0] = "none of the protection key systems supported";
+                                            player.trigger('error', [player, {code: 0}]);
+                                            player.conf.errors[0] = "";
+                                        }
+                                        break;
                                     case "ERROR":
                                         switch (e.error) {
                                         case "download":
@@ -426,6 +437,8 @@
                                     }
                                 });
                             });
+
+                            keySystem = null;
 
                             mediaPlayer.initialize(videoTag, video.src, autoplay);
 
