@@ -120,7 +120,6 @@
 
                         if (dashQualitiesConf === true || qIndices.indexOf(-1) > -1) {
                             qualities.unshift(-1);
-                            bandwidths.unshift(0);
                         }
 
                         player.video.qualities = [];
@@ -140,7 +139,7 @@
                         if (qualities.indexOf(lastSelectedQuality) > -1) {
                             mediaPlayer.setAutoSwitchQualityFor("video", lastSelectedQuality < 0);
                             if (lastSelectedQuality > -1) {
-                                mediaPlayer.setInitialBitrateFor("video", Math.round(bandwidths[lastSelectedQuality] / 1000));
+                                mediaPlayer.setInitialBitrateFor("video", bandwidths[lastSelectedQuality] / 1000);
                             }
                             player.video.quality = lastSelectedQuality;
                         } else {
