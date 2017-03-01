@@ -23,6 +23,7 @@
     var extension = function (dashjs, flowplayer) {
         var engineName = "dash",
             mse = window.MediaSource || window.WebKitMediaSource,
+            UA = navigator.userAgent,
             common = flowplayer.common,
             extend = flowplayer.extend,
             version = flowplayer.version,
@@ -33,7 +34,7 @@
                 return sourceType.toLowerCase() === "application/dash+xml" &&
                         mse.isTypeSupported(dashType + ';codecs="' + dashCodecs + '"') &&
                         // Android MSE advertises he-aac, but fails
-                        (dashCodecs.indexOf("mp4a.40.5") < 0 || navigator.userAgent.indexOf("Android") < 0);
+                        (dashCodecs.indexOf("mp4a.40.5") < 0 || UA.indexOf("Android") < 0);
             },
 
             engineImpl = function dashjsEngine(player, root) {
@@ -365,6 +366,7 @@
                             mediaPlayer.enableLastBitrateCaching(false);
                             // for seeking in paused state
                             mediaPlayer.setScheduleWhilePaused(true);
+                            mediaPlayer.setFastSwitchEnabled(UA.indexOf("Trident/7") < 0);
                             mediaPlayer.getDebug().setLogToBrowserConsole(dashUpdatedConf.debug);
 
                             Object.keys(DASHEVENTS).forEach(function (key) {
