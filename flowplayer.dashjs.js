@@ -391,7 +391,7 @@
                                         initQualitySelection(dashQualitiesConf, e.data);
                                         break;
                                     case "CAN_PLAY":
-                                        if (brwsr.safari && !mediaPlayer.isPaused()) {
+                                        if (brwsr.safari && autoplay) {
                                             // hack to avoid "heaving" in Safari
                                             // at least in splash setups and playlist transitions
                                             common.addClass(root, loadingClass);
