@@ -40,6 +40,7 @@
             engineImpl = function dashjsEngine(player, root) {
                 var bean = flowplayer.bean,
                     support = flowplayer.support,
+                    brwsr = support.browser,
                     mediaPlayer,
                     videoTag,
                     handleError = function (errorCode, src, url) {
@@ -59,7 +60,7 @@
                         // multiperiod not supported
                         if (!dashQualitiesConf || !support.inlineVideo ||
                                 data.Period_asArray.length > 1 ||
-                                (support.browser.safari && !dashconf.qualitiesForSafari)) {
+                                (brwsr.safari && !dashconf.qualitiesForSafari)) {
                             return;
                         }
 
@@ -378,6 +379,7 @@
                                 mediaPlayer.on(etype, function (e) {
                                     var src = player.video.src,
                                         videoDashConf = player.video.dash,
+                                        loadingClass = "is-loading",
                                         fperr,
                                         errobj;
 
@@ -387,6 +389,18 @@
                                             mediaPlayer.getProtectionController().setRobustnessLevel(videoDashConf.protectionLevel);
                                         }
                                         initQualitySelection(dashQualitiesConf, e.data);
+                                        break;
+                                    case "CAN_PLAY":
+                                        if (brwsr.safari && !mediaPlayer.isPaused()) {
+                                            // hack to avoid "heaving" in Safari
+                                            // at least in splash setups and playlist transitions
+                                            common.addClass(root, loadingClass);
+                                            bean.one(videoTag, "timeupdate." + engineName, function () {
+                                                setTimeout(function () {
+                                                    common.removeClass(root, loadingClass);
+                                                });
+                                            });
+                                        }
                                         break;
                                     case "KEY_SYSTEM_SELECTED":
                                         keySystem = e.data.keySystem.systemString;
