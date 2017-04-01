@@ -192,6 +192,7 @@
                                     error: "error"
                                 },
                                 DASHEVENTS = dashjs.MediaPlayer.events,
+                                protection = video.dash && video.dash.protection,
                                 autoplay = !!video.autoplay || !!conf.autoplay,
                                 posterClass = "is-poster",
                                 livestartpos = 0;
@@ -357,8 +358,11 @@
                             mediaPlayer = dashjs.MediaPlayer().create();
                             player.engine[engineName] = mediaPlayer;
 
-                            if (video.dash && video.dash.protection) {
-                                mediaPlayer.setProtectionData(video.dash.protection);
+                            if (protection) {
+                                mediaPlayer.setProtectionData(protection);
+                                mediaPlayer.on(dashjs.Protection.events.KEY_SYSTEM_SELECTED, function (e) {
+                                    keySystem = e.data.keySystem.systemString;
+                                });
                             }
                             // new ABR algo
                             mediaPlayer.enableBufferOccupancyABR(dashUpdatedConf.bufferOccupancyABR);
@@ -402,28 +406,21 @@
                                             });
                                         }
                                         break;
-                                    case "KEY_SYSTEM_SELECTED":
-                                        keySystem = e.data.keySystem.systemString;
-                                        break;
-                                            /* FALSE POSITIVES!
-                                    case "FRAGMENT_LOADING_COMPLETED":
-                                        if (videoDashConf && videoDashConf.protection &&
-                                                e.request.startTime && !keySystem) {
-                                            player.conf.errors[0] = "none of the protection key systems supported";
-                                            player.trigger('error', [player, {code: 0}]);
-                                            player.conf.errors[0] = "";
-                                        }
-                                        break;
-                                            */
                                     case "ERROR":
                                         switch (e.error) {
+                                        case "capability":
+                                            if (e.event === "encryptedmedia" && protection && !keySystem) {
+                                                player.conf.errors[0] = "none of the protection key systems supported";
+                                                player.trigger('error', [player, {code: 0}]);
+                                                player.conf.errors[0] = "";
+                                                return;
+                                            }
+                                            fperr = 5;
+                                            break;
                                         case "download":
                                             fperr = 4;
                                             break;
                                         case "manifestError":
-                                            if (videoDashConf && videoDashConf.protection) {
-                                                return;
-                                            }
                                             fperr = 5;
                                             break;
                                         case "mediasource":
