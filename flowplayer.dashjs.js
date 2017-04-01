@@ -460,12 +460,9 @@
                             // update video object before ready
                             player.video = video;
 
-                            if (player.paused && autoplay) {
-                                if (support.firstframe) {
-                                    mediaPlayer.play();
-                                } else {
-                                    videoTag.play();
-                                }
+                            // only happens if !support.firstframe
+                            if (videoTag.paused && autoplay) {
+                                videoTag.play();
                             }
                         },
 
