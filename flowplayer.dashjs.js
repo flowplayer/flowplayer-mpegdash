@@ -326,7 +326,7 @@
                                 });
 
                                 if (!coreV6) {
-                                    player.on("quality." + engineName, function (e, api, q) {
+                                    player.on("quality." + engineName, function (_e, _api, q) {
                                         mediaPlayer.setAutoSwitchQualityFor("video", q < 0);
                                         if (q > -1) {
                                             mediaPlayer.setQualityFor("video", q);
