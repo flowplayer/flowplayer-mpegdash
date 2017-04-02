@@ -41,6 +41,8 @@
                 var bean = flowplayer.bean,
                     support = flowplayer.support,
                     brwsr = support.browser,
+                    fpdefaults = flowplayer.defaults,
+                    defaultErrors = fpdefaults.errors.slice(0),
                     mediaPlayer,
                     videoTag,
                     handleError = function (errorCode, src, url) {
@@ -204,6 +206,8 @@
                             }
 
                             if (!mediaPlayer) {
+                                conf.errors.push("None of the protection key systems supported. Try a different browser.");
+
                                 videoTag = common.findDirect("video", root)[0]
                                         || common.find(".fp-player > video", root)[0];
 
@@ -410,12 +414,10 @@
                                         switch (e.error) {
                                         case "capability":
                                             if (e.event === "encryptedmedia" && protection && !keySystem) {
-                                                player.conf.errors[0] = "none of the protection key systems supported";
-                                                player.trigger('error', [player, {code: 0}]);
-                                                player.conf.errors[0] = "";
-                                                return;
+                                                fperr = conf.errors.length - 1;
+                                            } else {
+                                                fperr = 5;
                                             }
-                                            fperr = 5;
                                             break;
                                         case "download":
                                             fperr = 4;
@@ -501,6 +503,8 @@
                                 bean.off(videoTag, listeners);
                                 common.removeNode(videoTag);
                                 videoTag = 0;
+                                player.conf.errors = defaultErrors;
+                                fpdefaults.errors = defaultErrors;
                             }
                         }
                     };
