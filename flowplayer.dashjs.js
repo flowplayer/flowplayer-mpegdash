@@ -69,11 +69,14 @@
                         var vsets = [],
                             bandwidths = [],
                             qualities = [],
-                            qIndices = [];
+                            qIndices = [],
+                            audioBandwidth = 0;
 
                         data.Period_asArray[0].AdaptationSet_asArray.forEach(function (aset) {
+                            var representations = aset.Representation_asArray;
+
                             if (aset.maxFrameRate) {
-                                aset.Representation_asArray.forEach(function (repr) {
+                                representations.forEach(function (repr) {
                                     var codecs = repr.mimeType + ";codecs=" + repr.codecs;
 
                                     if (mse.isTypeSupported(codecs)) {
@@ -85,6 +88,9 @@
                                         });
                                     }
                                 });
+                            } else if (representations[0].audioSamplingRate && !audioBandwidth) {
+                                // too simple: audio tracks may have different bitrates
+                                audioBandwidth = representations[0].bandwidth;
                             }
                         });
                         if (bandwidths.length < 2) {
@@ -135,7 +141,7 @@
                                 label = q.label || (idx < 0
                                     ? "Auto"
                                     : level.width + "x" + level.height +
-                                            " (" + Math.round(level.bandwidth / 1000) + "k)");
+                                            " (" + Math.round((level.bandwidth + audioBandwidth) / 1000) + "k)");
 
                             player.video.qualities.push({value: idx, label: label});
                         });
