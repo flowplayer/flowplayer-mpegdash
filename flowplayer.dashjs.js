@@ -72,7 +72,7 @@
                             qIndices = [];
 
                         data.Period_asArray[0].AdaptationSet_asArray.forEach(function (aset) {
-                            if (aset.par) {
+                            if (aset.maxFrameRate) {
                                 aset.Representation_asArray.forEach(function (repr) {
                                     var codecs = repr.mimeType + ";codecs=" + repr.codecs;
 
