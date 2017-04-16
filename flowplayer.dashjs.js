@@ -304,7 +304,7 @@
                                         case "buffer":
                                             try {
                                                 buffer = buffered.length && buffered.end(null);
-                                                if (!player.video.live && ct && buffer) {
+                                                if (!player.live && ct && buffer) {
                                                     // cycle through time ranges to obtain buffer
                                                     // nearest current time
                                                     for (i = buffered.length - 1; i > -1; i -= 1) {
