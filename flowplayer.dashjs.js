@@ -253,17 +253,19 @@
                                             buffered = videoTag.buffered,
                                             buffer = 0,
                                             buffend = 0,
+                                            updatedVideo = player.video,
+                                            src = updatedVideo.src,
                                             errorCode,
                                             i;
 
                                         switch (flow) {
                                         case "ready":
-                                            arg = extend(player.video, {
+                                            arg = extend(updatedVideo, {
                                                 duration: mediaPlayer.duration(),
                                                 seekable: seekable.length && seekable.end(null),
                                                 width: videoTag.videoWidth,
                                                 height: videoTag.videoHeight,
-                                                url: player.video.src
+                                                url: src
                                             });
                                             break;
                                         case "resume":
@@ -316,12 +318,12 @@
                                                     }
                                                 }
                                             } catch (ignore) {}
-                                            player.video.buffer = buffer;
+                                            updatedVideo.buffer = buffer;
                                             arg = buffer;
                                             break;
                                         case "error":
                                             errorCode = videoTag.error && videoTag.error.code;
-                                            arg = handleError(errorCode, player.video.src);
+                                            arg = handleError(errorCode, src);
                                             break;
                                         }
 
