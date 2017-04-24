@@ -316,7 +316,7 @@
                                                     }
                                                 }
                                             } catch (ignore) {}
-                                            video.buffer = buffer;
+                                            player.video.buffer = buffer;
                                             arg = buffer;
                                             break;
                                         case "error":
