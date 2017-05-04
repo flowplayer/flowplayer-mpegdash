@@ -386,8 +386,8 @@
                             mediaPlayer.setFastSwitchEnabled(UA.indexOf("Trident/7") < 0);
                             mediaPlayer.getDebug().setLogToBrowserConsole(dashUpdatedConf.debug);
                             if (dashUpdatedConf.xhrWithCredentials && dashUpdatedConf.xhrWithCredentials.length) {
-                                dashUpdatedConf.xhrWithCredentials.forEach(function (streamType) {
-                                    mediaPlayer.setXHRWithCredentialsForType(streamType, true);
+                                dashUpdatedConf.xhrWithCredentials.forEach(function (requestType) {
+                                    mediaPlayer.setXHRWithCredentialsForType(requestType, true);
                                 });
                             }
 
