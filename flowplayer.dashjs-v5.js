@@ -3,15 +3,15 @@
 
 /*!
 
-   MPEG-DASH engine plugin for Flowplayer HTML5 version 5.x
+   DASH engine plugin for Flowplayer HTML5 version 5.x
 
    Copyright 2015 Flowplayer Oy
 
    Released under the MIT License:
    http://www.opensource.org/licenses/mit-license.php
 
-   Includes dash.all.js:
-   Copyright (c) 2015-16, Dash Industry Forum. **All rights reserved.
+   Includes dash.js:
+   Copyright (c) 2015, Dash Industry Forum. All rights reserved.
    https://github.com/Dash-Industry-Forum/dash.js/blob/master/LICENSE.md
 
    requires:
