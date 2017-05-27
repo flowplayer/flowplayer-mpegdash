@@ -250,7 +250,7 @@
 
                                         var vct = videoTag.currentTime,
                                             ct = (mediaPlayer.time && mediaPlayer.time()) || vct,
-                                            seekable = videoTag.seekable,
+                                            dur = mediaPlayer.duration(),
                                             buffered = videoTag.buffered,
                                             buffer = 0,
                                             buffend = 0,
@@ -262,8 +262,8 @@
                                         switch (flow) {
                                         case "ready":
                                             arg = extend(updatedVideo, {
-                                                duration: mediaPlayer.duration(),
-                                                seekable: seekable.length && seekable.end(null),
+                                                duration: dur,
+                                                seekable: dur,
                                                 width: videoTag.videoWidth,
                                                 height: videoTag.videoHeight,
                                                 url: src
