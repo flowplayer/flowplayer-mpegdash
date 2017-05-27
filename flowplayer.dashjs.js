@@ -73,9 +73,10 @@
                             audioBandwidth = 0;
 
                         data.Period_asArray[0].AdaptationSet_asArray.forEach(function (aset) {
-                            var representations = aset.Representation_asArray;
+                            var representations = aset.Representation_asArray,
+                                mimeType = aset.mimeType || representations[0].mimeType;
 
-                            if (aset.maxFrameRate) {
+                            if (mimeType.startsWith("video/")) {
                                 representations.forEach(function (repr) {
                                     var codecs = repr.mimeType + ";codecs=" + repr.codecs;
 
