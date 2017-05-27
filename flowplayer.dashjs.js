@@ -89,7 +89,7 @@
                                         });
                                     }
                                 });
-                            } else if (representations[0].audioSamplingRate && !audioBandwidth) {
+                            } else if (mimeType.startsWith("audio/") && !audioBandwidth) {
                                 // too simple: audio tracks may have different bitrates
                                 audioBandwidth = representations[0].bandwidth;
                             }
