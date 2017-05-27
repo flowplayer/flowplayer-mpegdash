@@ -386,6 +386,15 @@
                             mediaPlayer.setScheduleWhilePaused(true);
                             mediaPlayer.setFastSwitchEnabled(UA.indexOf("Trident/7") < 0);
                             mediaPlayer.getDebug().setLogToBrowserConsole(dashUpdatedConf.debug);
+                            // live
+                            if (dashUpdatedConf.liveDelay !== undefined) {
+                                mediaPlayer.setLiveDelay(dashUpdatedConf.liveDelay);
+                            }
+                            if (dashUpdatedConf.liveDelayFragmentCount !== undefined) {
+                                mediaPlayer.setLiveDelayFragmentCount(dashUpdatedConf.liveDelayFragmentCount);
+                            }
+                            mediaPlayer.useSuggestedPresentationDelay(dashUpdatedConf.useSuggestedPresentationDelay);
+
                             if (dashUpdatedConf.xhrWithCredentials && dashUpdatedConf.xhrWithCredentials.length) {
                                 dashUpdatedConf.xhrWithCredentials.forEach(function (requestType) {
                                     mediaPlayer.setXHRWithCredentialsForType(requestType, true);
