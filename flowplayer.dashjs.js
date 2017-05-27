@@ -78,7 +78,7 @@
 
                             if (mimeType.startsWith("video/")) {
                                 representations.forEach(function (repr) {
-                                    var codecs = repr.mimeType + ";codecs=" + repr.codecs;
+                                    var codecs = (repr.mimeType || mimeType) + ";codecs=" + repr.codecs;
 
                                     if (mse.isTypeSupported(codecs)) {
                                         bandwidths.push(repr.bandwidth);
