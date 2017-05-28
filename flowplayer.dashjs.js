@@ -387,10 +387,10 @@
                             mediaPlayer.setFastSwitchEnabled(UA.indexOf("Trident/7") < 0);
                             mediaPlayer.getDebug().setLogToBrowserConsole(dashUpdatedConf.debug);
                             // live
-                            if (dashUpdatedConf.liveDelay !== undefined) {
+                            if (typeof dashUpdatedConf.liveDelay === "number") {
                                 mediaPlayer.setLiveDelay(dashUpdatedConf.liveDelay);
                             }
-                            if (dashUpdatedConf.liveDelayFragmentCount !== undefined) {
+                            if (typeof dashUpdatedConf.liveDelayFragmentCount === "number") {
                                 mediaPlayer.setLiveDelayFragmentCount(dashUpdatedConf.liveDelayFragmentCount);
                             }
                             mediaPlayer.useSuggestedPresentationDelay(dashUpdatedConf.useSuggestedPresentationDelay);
