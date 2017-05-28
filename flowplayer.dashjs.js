@@ -58,19 +58,35 @@
                     },
 
                     lastSelectedQuality = -1,
-                    initQualitySelection = function (dashQualitiesConf, data) {
-                        // multiperiod not supported
-                        if (!dashQualitiesConf || !support.inlineVideo ||
-                                data.Period_asArray.length > 1 ||
-                                (brwsr.safari && !dashconf.qualitiesForSafari)) {
-                            return;
-                        }
+                    setInitialVideoQuality = function (initialVideoQuality, bandwidths, qsel) {
+                        var highestBandwidth = bandwidths.length - 1;
 
+                        if (initialVideoQuality > highestBandwidth) {
+                            initialVideoQuality = highestBandwidth;
+                        }
+                        mediaPlayer.setAutoSwitchQualityFor("video", false);
+                        mediaPlayer.setInitialBitrateFor("video", bandwidths[initialVideoQuality] / 1000);
+                        if (qsel) {
+                            player.video.quality = -1;
+                        }
+                        player.one("progress." + engineName, function () {
+                            mediaPlayer.setAutoSwitchQualityFor("video", true);
+                        });
+                    },
+                    initQualitySelection = function (dashQualitiesConf, initialVideoQuality, data) {
+                        // multiperiod not supported
                         var vsets = [],
                             bandwidths = [],
                             qualities = [],
                             qIndices = [],
-                            audioBandwidth = 0;
+                            audioBandwidth = 0,
+                            qselConf = dashQualitiesConf && support.inlineVideo &&
+                                    data.Period_asArray.length === 1 &&
+                                    (!brwsr.safari || (brwsr.safari && dashconf.qualitiesForSafari));
+
+                        if (!qselConf && initialVideoQuality < 0) {
+                            return;
+                        }
 
                         data.Period_asArray[0].AdaptationSet_asArray.forEach(function (aset) {
                             var representations = aset.Representation_asArray,
@@ -100,6 +116,11 @@
                         bandwidths.sort(function (a, b) {
                             return a - b;
                         });
+
+                        if (!qselConf) {
+                            setInitialVideoQuality(initialVideoQuality, bandwidths);
+                            return;
+                        }
 
                         if (dashQualitiesConf !== true) {
                             if (typeof dashQualitiesConf === "string") {
@@ -147,7 +168,9 @@
                             player.video.qualities.push({value: idx, label: label});
                         });
 
-                        if (qualities.indexOf(lastSelectedQuality) > -1) {
+                        if (lastSelectedQuality < 0 && initialVideoQuality > -1) {
+                            setInitialVideoQuality(initialVideoQuality, bandwidths, true);
+                        } else if (qualities.indexOf(lastSelectedQuality) > -1) {
                             mediaPlayer.setAutoSwitchQualityFor("video", lastSelectedQuality < 0);
                             if (lastSelectedQuality > -1) {
                                 mediaPlayer.setInitialBitrateFor("video", bandwidths[lastSelectedQuality] / 1000);
@@ -419,7 +442,8 @@
                                         if (videoDashConf && videoDashConf.protectionLevel) {
                                             mediaPlayer.getProtectionController().setRobustnessLevel(videoDashConf.protectionLevel);
                                         }
-                                        initQualitySelection(dashQualitiesConf, e.data);
+                                        initQualitySelection(dashQualitiesConf,
+                                                dashUpdatedConf.initialVideoQuality, e.data);
                                         break;
                                     case "CAN_PLAY":
                                         if (brwsr.safari && autoplay) {
@@ -561,6 +585,7 @@
                 dashconf = extend({
                     type: "video/mp4",
                     codecs: "avc1.42c01e,mp4a.40.2",
+                    initialVideoQuality: -1,
                     qualitiesForSafari: true
                 }, conf[engineName], conf.clip[engineName]);
 
