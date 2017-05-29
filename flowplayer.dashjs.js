@@ -439,7 +439,7 @@
 
                                     switch (key) {
                                     case "MANIFEST_LOADED":
-                                        if (videoDashConf && videoDashConf.protectionLevel) {
+                                        if (brwsr.chrome && videoDashConf && videoDashConf.protectionLevel) {
                                             mediaPlayer.getProtectionController().setRobustnessLevel(videoDashConf.protectionLevel);
                                         }
                                         initQualitySelection(dashQualitiesConf,
