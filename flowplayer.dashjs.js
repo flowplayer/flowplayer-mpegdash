@@ -145,8 +145,8 @@
                                     : idx,
                                 label = q.label || (idx < 0
                                     ? "Auto"
-                                    : level.width + "x" + level.height +
-                                            " (" + Math.round((level.bandwidth + audioBandwidth) / 1000) + "k)");
+                                    : Math.min(level.width, level.height) + "p " +
+                                            "(" + Math.round((level.bandwidth + audioBandwidth) / 1000) + "k)");
 
                             return {value: idx, label: label};
                         });
