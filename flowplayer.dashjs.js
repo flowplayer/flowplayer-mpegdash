@@ -58,28 +58,27 @@
                     },
 
                     lastSelectedQuality = -1,
-                    setInitialVideoQuality = function (initialVideoQuality, bandwidths, qsel) {
-                        var highestBandwidth = bandwidths.length - 1;
-
-                        if (initialVideoQuality > highestBandwidth) {
-                            initialVideoQuality = highestBandwidth;
-                        }
-                        mediaPlayer.setAutoSwitchQualityFor("video", false);
-                        mediaPlayer.setInitialBitrateFor("video", bandwidths[initialVideoQuality] / 1000);
-                        if (qsel) {
-                            player.video.quality = -1;
-                        }
-                        player.one("progress." + engineName, function () {
-                            mediaPlayer.setAutoSwitchQualityFor("video", true);
-                        });
-                    },
                     initQualitySelection = function (dashQualitiesConf, initialVideoQuality, data) {
                         // multiperiod not supported
                         var vsets = [],
-                            bandwidths = [],
-                            qualities = [],
-                            qIndices = [],
+                            qualities,
                             audioBandwidth = 0,
+                            getLevel = function (q) {
+                                return isNaN(Number(q))
+                                    ? q.level
+                                    : q;
+                            },
+                            setInitialVideoQuality = function (initialVideoQuality, vsets, qsel) {
+                                initialVideoQuality = Math.min(initialVideoQuality, vsets.length - 1);
+                                mediaPlayer.setAutoSwitchQualityFor("video", false);
+                                mediaPlayer.setInitialBitrateFor("video", vsets[initialVideoQuality].bandwidth / 1000);
+                                if (qsel) {
+                                    player.video.quality = -1;
+                                }
+                                player.one("progress." + engineName, function () {
+                                    mediaPlayer.setAutoSwitchQualityFor("video", true);
+                                });
+                            },
                             qselConf = dashQualitiesConf && support.inlineVideo &&
                                     data.Period_asArray.length === 1 &&
                                     (!brwsr.safari || (brwsr.safari && dashconf.qualitiesForSafari));
@@ -93,87 +92,71 @@
                                 mimeType = aset.mimeType || representations[0].mimeType;
 
                             if (mimeType.startsWith("video/")) {
-                                representations.forEach(function (repr) {
+                                vsets = vsets.concat(representations.filter(function (repr) {
                                     var codecs = (repr.mimeType || mimeType) + ";codecs=" + repr.codecs;
 
-                                    if (mse.isTypeSupported(codecs)) {
-                                        bandwidths.push(repr.bandwidth);
-                                        vsets.push({
-                                            bandwidth: repr.bandwidth,
-                                            height: repr.height,
-                                            width: repr.width
-                                        });
-                                    }
-                                });
+                                    return mse.isTypeSupported(codecs);
+                                }));
                             } else if (mimeType.startsWith("audio/") && !audioBandwidth) {
                                 // too simple: audio tracks may have different bitrates
                                 audioBandwidth = representations[0].bandwidth;
                             }
                         });
-                        if (bandwidths.length < 2) {
+                        if (vsets.length < 2) {
                             return;
                         }
-                        bandwidths.sort(function (a, b) {
-                            return a - b;
+
+                        vsets.sort(function (a, b) {
+                            return a.bandwidth - b.bandwidth;
                         });
 
                         if (!qselConf) {
-                            setInitialVideoQuality(initialVideoQuality, bandwidths);
+                            setInitialVideoQuality(initialVideoQuality, vsets);
                             return;
                         }
 
-                        if (dashQualitiesConf !== true) {
-                            if (typeof dashQualitiesConf === "string") {
-                                dashQualitiesConf.split(/\s*,\s*/).forEach(function (q) {
-                                    qIndices.push(parseInt(q, 10));
-                                });
-                            } else if (typeof dashQualitiesConf !== "boolean") {
-                                dashQualitiesConf.forEach(function (q) {
-                                    qIndices.push(isNaN(Number(q))
-                                        ? q.level
-                                        : q);
-                                });
-                            }
-                        }
-                        bandwidths.forEach(function (bw) {
-                            var levelIndex = 0;
-
-                            vsets.forEach(function (vset) {
-                                if (bw === vset.bandwidth &&
-                                        (dashQualitiesConf === true || qIndices.indexOf(levelIndex) > -1)) {
-                                    qualities.push(levelIndex);
-                                }
-                                levelIndex += 1;
+                        switch (typeof dashQualitiesConf) {
+                        case "object":
+                            qualities = dashQualitiesConf.map(getLevel);
+                            break;
+                        case "string":
+                            qualities = dashQualitiesConf.split(/\s*,\s*/).map(Number);
+                            break;
+                        default:
+                            qualities = vsets.map(function (repr) {
+                                return vsets.indexOf(repr);
                             });
+                            qualities.unshift(-1);
+                        }
+                        qualities = qualities.filter(function (q) {
+                            return q < vsets.length && q > -2;
                         });
+
                         if (qualities.length < 2) {
                             return;
                         }
 
-                        if (dashQualitiesConf === true || qIndices.indexOf(-1) > -1) {
-                            qualities.unshift(-1);
-                        }
-
-                        player.video.qualities = [];
-                        qualities.forEach(function (idx) {
+                        player.video.qualities = qualities.map(function (idx) {
                             var level = vsets[idx],
-                                q = qIndices.length
-                                    ? dashQualitiesConf[qIndices.indexOf(idx)]
+                                q = typeof dashQualitiesConf === "object"
+                                    ? dashQualitiesConf.filter(function (q) {
+                                        return getLevel(q) === idx;
+                                    })[0]
                                     : idx,
                                 label = q.label || (idx < 0
                                     ? "Auto"
                                     : level.width + "x" + level.height +
                                             " (" + Math.round((level.bandwidth + audioBandwidth) / 1000) + "k)");
 
-                            player.video.qualities.push({value: idx, label: label});
+                            return {value: idx, label: label};
                         });
 
                         if (lastSelectedQuality < 0 && initialVideoQuality > -1) {
-                            setInitialVideoQuality(initialVideoQuality, bandwidths, true);
+                            setInitialVideoQuality(initialVideoQuality, vsets, true);
                         } else if (qualities.indexOf(lastSelectedQuality) > -1) {
                             mediaPlayer.setAutoSwitchQualityFor("video", lastSelectedQuality < 0);
                             if (lastSelectedQuality > -1) {
-                                mediaPlayer.setInitialBitrateFor("video", bandwidths[lastSelectedQuality] / 1000);
+                                mediaPlayer.setInitialBitrateFor("video", vsets[lastSelectedQuality].bandwidth / 1000);
                             }
                             player.video.quality = lastSelectedQuality;
                         } else {
