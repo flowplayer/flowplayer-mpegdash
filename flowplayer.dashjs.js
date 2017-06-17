@@ -239,9 +239,7 @@
                                 // autoplay depending on initialization
                                 // so setting the attributes here will have no effect
                                 videoTag = common.createElement("video", {
-                                    "class": "fp-engine " + engineName + "-engine",
-                                    "volume": player.volumeLevel,
-                                    "x-webkit-airplay": "allow"
+                                    "class": "fp-engine " + engineName + "-engine"
                                 });
 
                                 Object.keys(EVENTS).forEach(function (key) {
