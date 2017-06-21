@@ -123,8 +123,8 @@
                             qualities = dashQualitiesConf.split(/\s*,\s*/).map(Number);
                             break;
                         default:
-                            qualities = vsets.map(function (repr) {
-                                return vsets.indexOf(repr);
+                            qualities = vsets.map(function (_repr, i) {
+                                return i;
                             });
                             qualities.unshift(-1);
                         }
@@ -172,22 +172,17 @@
                         engineName: engineName,
 
                         pick: function (sources) {
-                            var i,
-                                source,
-                                dashType,
-                                dashCodecs;
+                            var source = sources.filter(function (s) {
+                                var dashType = s.dashType || dashconf.type,
+                                    dashCodecs = s.dashCodecs || dashconf.codecs;
 
-                            for (i = 0; i < sources.length; i += 1) {
-                                source = sources[i];
-                                dashType = source.dashType || dashconf.type;
-                                dashCodecs = source.dashCodecs || dashconf.codecs;
-                                if (dashCanPlay(source.type, dashType, dashCodecs)) {
-                                    if (typeof source.src === 'string') {
-                                        source.src = common.createAbsoluteUrl(source.src);
-                                    }
-                                    return source;
-                                }
+                                return dashCanPlay(s.type, dashType, dashCodecs);
+                            })[0];
+
+                            if (typeof source.src === 'string') {
+                                source.src = common.createAbsoluteUrl(source.src);
                             }
+                            return source;
                         },
 
                         load: function (video) {
@@ -256,12 +251,11 @@
                                             ct = (mediaPlayer.time && mediaPlayer.time()) || vct,
                                             dur = mediaPlayer.duration(),
                                             buffered = videoTag.buffered,
-                                            buffer = 0,
-                                            buffend = 0,
+                                            buffends = [],
+                                            i,
                                             updatedVideo = player.video,
                                             src = updatedVideo.src,
-                                            errorCode,
-                                            i;
+                                            errorCode;
 
                                         switch (flow) {
                                         case "ready":
@@ -309,22 +303,13 @@
                                             arg = videoTag.volume;
                                             break;
                                         case "buffer":
-                                            try {
-                                                buffer = buffered.length && buffered.end(null);
-                                                if (!player.live && ct && buffer) {
-                                                    // cycle through time ranges to obtain buffer
-                                                    // nearest current time
-                                                    for (i = buffered.length - 1; i > -1; i -= 1) {
-                                                        buffend = buffered.end(i);
-
-                                                        if (buffend >= ct) {
-                                                            buffer = buffend;
-                                                        }
-                                                    }
-                                                }
-                                            } catch (ignore) {}
-                                            updatedVideo.buffer = buffer;
-                                            arg = buffer;
+                                            for (i = 0; i < buffered.length; i += 1) {
+                                                buffends.push(buffered.end(i));
+                                            }
+                                            arg = buffends.filter(function (b) {
+                                                return b >= ct;
+                                            }).sort()[0];
+                                            updatedVideo.buffer = arg;
                                             break;
                                         case "error":
                                             errorCode = videoTag.error && videoTag.error.code;
