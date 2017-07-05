@@ -41,6 +41,7 @@
                 var bean = flowplayer.bean,
                     support = flowplayer.support,
                     brwsr = support.browser,
+                    desktopSafari = brwsr.safari && support.dataload, // exclude IEMobile
                     fpdefaults = flowplayer.defaults,
                     defaultErrors = fpdefaults.errors.slice(0),
                     mediaPlayer,
@@ -81,7 +82,7 @@
                             },
                             qselConf = dashQualitiesConf && support.inlineVideo &&
                                     data.Period_asArray.length === 1 &&
-                                    (!brwsr.safari || (brwsr.safari && dashconf.qualitiesForSafari));
+                                    (!desktopSafari || (desktopSafari && dashconf.qualitiesForSafari));
 
                         if (!qselConf && initialVideoQuality < 0) {
                             return;
@@ -414,7 +415,7 @@
                                                 dashUpdatedConf.initialVideoQuality, e.data);
                                         break;
                                     case "CAN_PLAY":
-                                        if (brwsr.safari && autoplay) {
+                                        if (desktopSafari && autoplay) {
                                             // hack to avoid "heaving" in Safari
                                             // at least in splash setups and playlist transitions
                                             common.addClass(root, loadingClass);
@@ -478,7 +479,7 @@
                             mediaPlayer.attachView(videoTag);
                             mediaPlayer.attachSource(video.src);
 
-                            if (!support.firstframe && videoTag.paused && autoplay) {
+                            if (support.android && support.dataload && videoTag.paused && autoplay) {
                                 videoTag.play();
                             }
                         },
