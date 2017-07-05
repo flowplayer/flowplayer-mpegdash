@@ -479,7 +479,8 @@
                             mediaPlayer.attachView(videoTag);
                             mediaPlayer.attachSource(video.src);
 
-                            if (support.android && support.dataload && videoTag.paused && autoplay) {
+                            if (!support.firstframe && support.dataload && !brwsr.mozilla &&
+                                    autoplay && videoTag.paused) {
                                 videoTag.play();
                             }
                         },
