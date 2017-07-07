@@ -92,13 +92,13 @@
                             var representations = aset.Representation_asArray,
                                 mimeType = aset.mimeType || representations[0].mimeType;
 
-                            if (mimeType.startsWith("video/")) {
+                            if (mimeType.indexOf("video/") === 0) {
                                 vsets = vsets.concat(representations.filter(function (repr) {
                                     var codecs = (repr.mimeType || mimeType) + ";codecs=" + repr.codecs;
 
                                     return mse.isTypeSupported(codecs);
                                 }));
-                            } else if (mimeType.startsWith("audio/") && !audioBandwidth) {
+                            } else if (mimeType.indexOf("audio/") === 0 && !audioBandwidth) {
                                 // too simple: audio tracks may have different bitrates
                                 audioBandwidth = representations[0].bandwidth;
                             }
