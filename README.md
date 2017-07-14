@@ -47,8 +47,8 @@ A fully documented demo can be found [here](http://demos.flowplayer.org/api/dash
 Features
 --------
 
-- packs a compatibility tested version - current:
-  [v2.4.1](https://github.com/Dash-Industry-Forum/dash.js/releases/tag/v2.4.1) - of
+- packs a compatibility tested patched version - current:
+  [v2.5.0](https://github.com/Dash-Industry-Forum/dash.js/releases/tag/v2.5.0) - of
   [dash.js](https://github.com/Dash-Industry-Forum/dash.js) by the
   [Dash Industry Forum](http://dashif.org/software/)
 - engine is only loaded if the client supports DASH in a MediaSource element, see also the `codecs`
@@ -62,7 +62,7 @@ Stream compatibility
 
 DASH is not a fixed standard yet, but a moving target. As the plugin is based on dash.js stream
 compatibility can be cross-checked in the latest
-[dash.js sample player](http://dashif.org/reference/players/javascript/v2.4.1/samples/dash-if-reference-player/).
+[dash.js sample player](http://dashif.org/reference/players/javascript/v2.5.0/samples/dash-if-reference-player/).
 
 *Caveat:* WebM-DASH streams are extremely unlikely to work correctly with dash.js - or any other
 available client library we know about. - Hence historically the name of the plugin Git repository.
