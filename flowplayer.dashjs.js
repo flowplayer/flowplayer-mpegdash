@@ -359,7 +359,6 @@
                             }
 
                             mediaPlayer = dashjs.MediaPlayer().create();
-                            mediaPlayer.initialize();
                             player.engine[engineName] = mediaPlayer;
 
                             if (protection) {
@@ -370,7 +369,6 @@
                             }
                             // new ABR algo
                             mediaPlayer.enableBufferOccupancyABR(dashUpdatedConf.bufferOccupancyABR);
-                            mediaPlayer.setAutoPlay(autoplay);
                             // caching can cause failures in playlists
                             // for the moment disable entirely
                             mediaPlayer.enableLastBitrateCaching(false);
@@ -476,8 +474,7 @@
                             // update video object before ready
                             player.video = video;
 
-                            mediaPlayer.attachView(videoTag);
-                            mediaPlayer.attachSource(video.src);
+                            mediaPlayer.initialize(videoTag, video.src, autoplay);
 
                             if (!support.firstframe && support.dataload && !brwsr.mozilla &&
                                     autoplay && videoTag.paused) {
