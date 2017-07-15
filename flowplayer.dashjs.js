@@ -477,7 +477,7 @@
 
                             if (!support.firstframe && support.dataload && !brwsr.mozilla &&
                                     autoplay && videoTag.paused) {
-                                videoTag.play();
+                                videoTag.load();
                             }
                         },
 
