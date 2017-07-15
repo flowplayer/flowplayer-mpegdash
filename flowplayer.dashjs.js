@@ -42,8 +42,6 @@
                     support = flowplayer.support,
                     brwsr = support.browser,
                     desktopSafari = brwsr.safari && support.dataload, // exclude IEMobile
-                    fpdefaults = flowplayer.defaults,
-                    defaultErrors = fpdefaults.errors.slice(0),
                     mediaPlayer,
                     videoTag,
                     handleError = function (errorCode, src, url) {
@@ -215,8 +213,6 @@
                             }
 
                             if (!mediaPlayer) {
-                                conf.errors.push("None of the protection key systems supported. Try a different browser.");
-
                                 videoTag = common.findDirect("video", root)[0]
                                         || common.find(".fp-player > video", root)[0];
 
@@ -401,6 +397,8 @@
                                     var src = player.video.src,
                                         videoDashConf = player.video.dash,
                                         loadingClass = "is-loading",
+                                        errors = player.conf.errors,
+                                        protectionError = "None of the protection key systems supported. Try a different browser.",
                                         fperr,
                                         errobj;
 
@@ -428,7 +426,8 @@
                                         switch (e.error) {
                                         case "capability":
                                             if (e.event === "encryptedmedia" && protection && !keySystem) {
-                                                fperr = conf.errors.length - 1;
+                                                errors.push(protectionError);
+                                                fperr = errors.length - 1;
                                             } else {
                                                 fperr = 5;
                                             }
@@ -517,8 +516,6 @@
                                 bean.off(videoTag, listeners);
                                 common.removeNode(videoTag);
                                 videoTag = 0;
-                                player.conf.errors = defaultErrors;
-                                fpdefaults.errors = defaultErrors;
                             }
                         }
                     };
