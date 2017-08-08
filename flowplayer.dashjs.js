@@ -420,6 +420,9 @@
                                             });
                                         }
                                         break;
+                                    case "BUFFER_LEVEL_STATE_CHANGED":
+                                        common.toggleClass(root, "is-seeking", e.state === "bufferStalled");
+                                        break;
                                     case "ERROR":
                                         switch (e.error) {
                                         case "capability":
