@@ -278,7 +278,7 @@
                                                 if (!livestartpos && vct) {
                                                     livestartpos = vct;
                                                 }
-                                                arg = vct - livestartpos
+                                                arg = vct - livestartpos;
                                             } else {
                                                 arg = ct;
                                             }
