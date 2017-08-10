@@ -94,7 +94,7 @@ load the components separately using the latest development build or release fro
 <script src="//releases.flowplayer.org/7.0.2/flowplayer.min.js"></script>
 
 <!-- load dash.js latest release -->
-<!-- <script src="//cdn.dashjs.org/v2.4.1/dash.all.min.js"></script> -->
+<!-- <script src="//cdn.dashjs.org/v2.5.0/dash.all.min.js"></script> -->
 
 <!-- or load dash.js latest dev build -->
 <script src="//cdn.dashjs.org/latest/dash.all.min.js"></script>
@@ -118,20 +118,21 @@ exclusion with a simple page using bare dash.js, like:
 <html>
 <head>
 
-<script src="//cdn.dashjs.org/v2.4.1/dash.all.min.js"></script>
+<script src="//cdn.dashjs.org/v2.5.0/dash.all.min.js"></script>
 
 <script>
 window.onload = function () {
-  Dash.createAll();
+  var videoTag = document.querySelector("video"),
+      mediaPlayer = dashjs.MediaPlayer().create();
+
+  mediaPlayer.initialize(videoTag, "//example.com/testvideo.mpd");
 };
 </script>
 
 </head>
 <body>
 
-<video class="dashjs-player" controls>
-  <source type="application/dash+xml" src="//example.com/testvideo.mpd">
-</video>
+<video controls></video>
 
 </body>
 </html>
