@@ -233,6 +233,9 @@
                                 videoTag = common.createElement("video", {
                                     "class": "fp-engine " + engineName + "-engine"
                                 });
+                                if (support.mutedAutoplay && autoplay) {
+                                    videoTag.muted = true;
+                                }
 
                                 Object.keys(EVENTS).forEach(function (key) {
                                     var flow = EVENTS[key],
