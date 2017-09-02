@@ -364,8 +364,6 @@
                                     keySystem = e.data.keySystem.systemString;
                                 });
                             }
-                            // new ABR algo
-                            mediaPlayer.enableBufferOccupancyABR(dashUpdatedConf.bufferOccupancyABR);
                             // caching can cause failures in playlists
                             // for the moment disable entirely
                             mediaPlayer.enableLastBitrateCaching(false);
