@@ -202,7 +202,7 @@
                                 },
                                 DASHEVENTS = dashjs.MediaPlayer.events,
                                 protection = video.dash && video.dash.protection,
-                                autoplay = !!video.autoplay || !!conf.autoplay,
+                                autoplay = !!video.autoplay || !!conf.autoplay || !!conf.splash,
                                 posterClass = "is-poster",
                                 livestartpos = 0;
 
@@ -233,7 +233,7 @@
                                 videoTag = common.createElement("video", {
                                     "class": "fp-engine " + engineName + "-engine"
                                 });
-                                if (support.mutedAutoplay && autoplay) {
+                                if (support.mutedAutoplay && !conf.splash && autoplay) {
                                     videoTag.muted = true;
                                 }
 
